@@ -1,0 +1,25 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[dev-packages]
+
+
+
+[packages]
+
+flask = "*"
+flask-pymongo = "*"
+apscheduler = "*"
+marshmallow = "*"
+flask-restful = "*"
+flask-apscheduler = "*"
+flask-socketio = "*"
+
+
+[requires]
+
+python_version = "2.7"

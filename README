@@ -1,0 +1,21 @@
+API REST:
+
+GET /api/electrovalve/list --> Lista delle info di tutte le elettrovalvole
+GET /api/electrovalve/id/:id/ --> Info di una elettrovalvola
+
+POST /api/electrovalve --> Crea nuova elettrovalvola
+
+PUT /api/electrovalve/id/:id --> Aggiorna dati elettrovalvola
+
+PUT /api/electrovalve/id/:id/water --> Innaffia elettrovalvola
+
+WS Socket
+
+get_sensor_humidity
+get_sensor_temp
+
+CRON:
+
+Innaffia
+Innaffia a quest'ora
+Verifica umidità

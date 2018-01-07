@@ -1,0 +1,22 @@
+{
+    "name": "Elettrovalvola",
+    "watering": false,
+    "mode" : "automatic",
+    "last_water": "",
+    "next_water": "",
+    "electrovalve_pin": 14,
+    "sensor_pin": 14,
+    "humidity_threshold": 25,
+    "current_humidity": 21,
+    "duration": 20,
+    "timetable" : [
+        {
+          "day": "mon",
+          "time": "3:43"
+        },
+        {
+          "day": "fri",
+          "time": "19:43"
+        }
+    ]
+}
