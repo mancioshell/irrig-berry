@@ -7,22 +7,22 @@ class PinFacade:
     def __init__(self, mongo):
         self.mongo = mongo
 
-    def getAvailablePin(self):
+    def getAvailablePins(self):
         electrovalves = list(self.mongo.db.electrovalve.find())
         if electrovalves is not None:
             automatic_electrovalves = filter(lambda electrovalve: 'sensor_pin' in electrovalve, electrovalves)
             sensor_pins = map(lambda electrovalve: electrovalve['sensor_pin'], automatic_electrovalves)
             electrovalve_pins = map(lambda electrovalve: electrovalve['electrovalve_pin'], electrovalves)
 
-            logger.info(electrovalve_pins)
-            logger.info(sensor_pins)
             available_pins = [name for name, pin in PINS.iteritems()
                 if name not in electrovalve_pins + sensor_pins]
-            logger.info(available_pins)
             return available_pins
         else:
             return PINS
 
-    def getAllPin(self):
+    def getAllPins(self):
         all_pins = [name for name, pin in PINS.iteritems()]
         return all_pins
+
+    def getPinIdFromName(self, name):
+        return PINS[name]

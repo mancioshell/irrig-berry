@@ -10,7 +10,6 @@ class PinList(Resource):
         self.pin_facade = PinFacade(kwargs['mongo'])
 
     def get(self):
-        """Get all pins"""
-        logger.info('Get all pins')
-        available_pins = self.pin_facade.getAvailablePin()
+        """Get all available pins"""        
+        available_pins = self.pin_facade.getAvailablePins()
         return jsonify(available_pins)

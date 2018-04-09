@@ -1,21 +1,24 @@
-#import RPi.GPIO as GPIO
 from waterberry.db.pymongo import mongo
 from waterberry.utils.logger import logger
+from waterberry.facade.gpio_facade import GPIOFacade
+from waterberry.facade.pin_facade import PinFacade
 from bson.objectid import ObjectId
 import time
-from random import randint
+from datetime import datetime
 
-#'current_humidity': { '$gte': 2 }
+def SoilSensor(electrovalve_id):
+    logger.info('SoilSensor job started ...')
 
-class SoilSensor:
-    def __call__(self, electrovalve_id):
-        logger.info('SoilSensor job started ...')
-        # GPIO.setwarnings(False)
-        # GPIO.setmode(GPIO.BOARD)
-        # GPIO.setup(pin, GPIO.IN)
-        current_humidity = randint(1, 100);
-        with mongo.app.app_context():
-            logger.info('Soil sensor for electrovalve with id {} has observed humidity {}%'
-                .format(electrovalve_id, current_humidity))
-            mongo.db.electrovalve.find_one_and_update({'_id': ObjectId(electrovalve_id) },
-                {'$set': {'current_humidity': current_humidity}})
+    with mongo.app.app_context():
+        electrovalve = mongo.db.electrovalve.find_one({'_id': ObjectId(electrovalve_id)})
+        sensor_pin = PinFacade(mongo).getPinIdFromName(electrovalve['sensor_pin'])
+
+        GPIOFacade().initBoard()
+        GPIOFacade().setupInputPin(sensor_pin)
+        current_humidity = GPIOFacade().getPinState(sensor_pin)
+
+        logger.info('Soil sensor for electrovalve with id {} has observed humidity {}%'
+            .format(electrovalve_id, current_humidity))
+
+        mongo.db.electrovalve.update_one({'_id': ObjectId(electrovalve_id) },
+            {'$set': {'current_humidity': current_humidity}})

@@ -1,0 +1,42 @@
+enable wifi : https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
+
+# INSTALL SSH ENV
+sudo systemctl enable ssh
+sudo systemctl start ssh
+ssh-keygen
+
+# INSTALL GIT
+apt-get update
+apt-get install git
+
+# INSTALL MONGO
+apt-get update
+apt-get install mongodb
+
+# INSTALL PYTHON ENV:
+sudo apt-get install python-dev
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+sudo python get-pip.py
+sudo pip install pipenv
+
+# INSTALL NODEJS ENV:
+apt-get update
+apt-get install node
+sudo apt-get install npm
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+sudo npm i -g webpack@3.10.0
+
+# INSTALL APPLICATION:
+git clone -b develop git@github.com:mancioshell/waterberry.git
+cd waterberry/
+cd waterberry/
+cd public && npm install
+webpack
+cd ../
+export PIPENV_TIMEOUT=5000
+pipenv install
+pipenv shell
+export FLASK_APP=app.py
+flask run --host=0.0.0.0

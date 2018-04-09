@@ -11,7 +11,7 @@ class ElectrovalveResource(Resource):
         self.pin_facade = PinFacade(kwargs['mongo'])
 
     def __isPinAlreadyInUse(self, property, json, data):
-        available_pins = map(lambda pin : pin, self.pin_facade.getAvailablePin())
+        available_pins = map(lambda pin : pin, self.pin_facade.getAvailablePins())
         if data is None:
             return json[property] not in available_pins
         else:
@@ -30,9 +30,6 @@ class ElectrovalveResource(Resource):
     def isWatering(self, data):
         if data['watering']:
             return make_response(jsonify({'message': ELECTROVALVE_IS_WATERING }), 403)
-
-    def addManualJob(self, electrovalve_id):
-        self.job_facade.addManualJob(electrovalve_id)
 
     def removeJob(self, electrovalve, electrovalve_id):
         if electrovalve['mode'] == 'manual':
@@ -54,3 +51,12 @@ class ElectrovalveResource(Resource):
             for count, calendar in enumerate(electrovalve['timetable']):
                 self.job_facade.removeScheduledJob(count, electrovalve_id)
                 self.job_facade.addScheduledJob(count, calendar, electrovalve_id)
+
+    def rescheduleJob(self, electrovalve, electrovalve_id):
+        if electrovalve['mode'] == 'manual':
+            self.job_facade.rescheduleManualJob(electrovalve_id)
+        elif electrovalve['mode'] == 'automatic':
+            self.job_facade.rescheduleAutomaticJob(electrovalve_id)
+        elif electrovalve['mode'] == 'scheduled':
+            for count, calendar in enumerate(electrovalve['timetable']):
+                self.job_facade.rescheduleScheduledJob(count, calendar, electrovalve_id)
