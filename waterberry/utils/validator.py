@@ -1,7 +1,6 @@
 from datetime import datetime
 from marshmallow import fields, Schema, post_load, validates, validates_schema, ValidationError
 
-from waterberry.facade.pin_facade import PinFacade
 from waterberry.utils.logger import logger
 
 class TimetableSchema(Schema):

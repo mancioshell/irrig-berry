@@ -57,8 +57,9 @@ class ReadElectrovalve extends React.Component {
       for (let value of data) {
         if (value._id == this.state.electrovalve._id) {
           this.state.electrovalve.watering = value.watering;
-          this.state.electrovalve.temperature = value.temperature;
-          this.state.electrovalve.current_humidity = value.humidity;
+          this.state.electrovalve.air_humidity = value.air_humidity;
+          this.state.electrovalve.air_temperature = value.air_temperature;
+          this.state.electrovalve.current_humidity = value.soil_humidity;
           this.state.electrovalve.last_water = value.last_water;
 
           this.setState({electrovalve: this.state.electrovalve});
@@ -136,14 +137,6 @@ class ReadElectrovalve extends React.Component {
                       <b>{this.state.electrovalve.sensor_pin}</b>
                     </p>
                   </div>
-                  <div className="col-md-6 mb-3">
-                    <label htmlFor="tresholdId">Soglia Umidità</label>
-                    <div className="progress">
-                      <div className="progress-bar" id="tresholdId" role="progressbar" style={{
-                          width: humidity_threshold
-                        }} aria-valuemin="0" aria-valuemax="100">{humidity_threshold_percentage}</div>
-                    </div>
-                  </div>
                 </div>)
               }
             })()
@@ -184,29 +177,24 @@ class ReadElectrovalve extends React.Component {
 
           <div className="form-row">
             <div className="col-md-6 mb-3">
-              <label htmlFor="humidityId">Umidità {this.state.electrovalve.current_humidity}</label>
-              {
-                this.state.electrovalve.current_humidity
-                  ? <div className="progress">
-                      <div className="progress-bar" id="humidityId" role="progressbar" style={{
-                          width: current_humidity
-                        }} aria-valuemin="0" aria-valuemax="100">{current_humidity_percentage}</div>
-                    </div>
-                  : <p>
-                      <span>
-                        <FontAwesomeIcon icon={faMinus}/>
-                      </span>
-                    </p>
-              }
-
+              <label htmlFor="humidityId">Umidità Aria </label>
+                <p>
+                  {
+                    this.state.electrovalve.air_humidity
+                      ? <b>{this.state.electrovalve.air_humidity}°</b>
+                      : <span>
+                          <FontAwesomeIcon icon={faMinus}/>
+                        </span>
+                  }
+                </p>
             </div>
 
             <div className="col-md-6 mb-3">
-              <label htmlFor="lastWaterId">Temperatura</label>
+              <label htmlFor="lastWaterId">Temperatura Aria </label>
               <p>
                 {
-                  this.state.electrovalve.temperature
-                    ? <b>{this.state.electrovalve.temperature}°</b>
+                  this.state.electrovalve.air_temperature
+                    ? <b>{this.state.electrovalve.air_temperature}°</b>
                     : <span>
                         <FontAwesomeIcon icon={faMinus}/>
                       </span>
@@ -214,6 +202,40 @@ class ReadElectrovalve extends React.Component {
               </p>
             </div>
           </div>
+
+
+          {
+            (() => {
+              if (this.state.electrovalve.mode == 'automatic') {
+                return (<div className="form-row">
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="soilHumidityId">Umidità Terra</label>
+                      {
+                        this.state.electrovalve.current_humidity
+                          ? <div className="progress">
+                              <div className="progress-bar" id="soilHumidityId" role="progressbar" style={{
+                                  width: current_humidity
+                                }} aria-valuemin="0" aria-valuemax="100">{current_humidity_percentage}</div>
+                            </div>
+                          : <p>
+                              <span>
+                                <FontAwesomeIcon icon={faMinus}/>
+                              </span>
+                            </p>
+                      }
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="tresholdId">Soglia Umidità</label>
+                    <div className="progress">
+                      <div className="progress-bar" id="tresholdId" role="progressbar" style={{
+                          width: humidity_threshold
+                        }} aria-valuemin="0" aria-valuemax="100">{humidity_threshold_percentage}</div>
+                    </div>
+                  </div>
+                </div>)
+              }
+            })()
+          }
 
           <div className="form-row">
             <div className="col-md-6 mb-3">

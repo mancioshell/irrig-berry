@@ -1,10 +1,7 @@
-from waterberry.db.pymongo import mongo
+from waterberry.db.dao_factory import database
 from waterberry.utils.logger import logger
-from waterberry.facade.gpio_facade import GPIOFacade
 
-from bson.objectid import ObjectId
 from flask_socketio import Namespace, emit
-from random import randint
 from threading import Lock
 
 thread = None
@@ -12,29 +9,31 @@ thread_lock = Lock()
 
 class ElectrovalveSocket(Namespace):
 
-    def __init__(self, socketio):
+    def __init__(self, socketio, electrovalve_dao, board):
         self.socketio = socketio
+        self.electrovalve_dao = electrovalve_dao
+        self.board = board
         super(ElectrovalveSocket, self).__init__()
 
     def __extractData(self, electrovalve):
-        GPIOFacade().initBoard()
-        GPIOFacade().setupInputPin(22)
-        current_temperature = GPIOFacade().getPinState(22)
+        self.board.initBoard()
+        air_humidity, air_temperature = self.board.getSensorData()
         current_humidity = electrovalve['current_humidity'] if 'current_humidity' in electrovalve else None
         last_water = str(electrovalve['last_water']) if 'last_water' in electrovalve else None
 
         return {
             '_id': str(electrovalve['_id']),
-            'humidity': current_humidity,
-            'temperature': current_temperature,
+            'soil_humidity': current_humidity,
+            'air_temperature': air_temperature,
+            'air_humidity': air_humidity,
             'watering': electrovalve['watering'],
             'last_water': last_water
             }
 
     def __backgroundTask(self):
         while True:
-            with mongo.app.app_context():
-                electrovalves = mongo.db.electrovalve.find()
+            with database.app.app_context():
+                electrovalves = self.electrovalve_dao.getElectrovalveList()
                 data = map(self.__extractData, electrovalves)
                 self.socketio.emit('data', data, json=True)
 
