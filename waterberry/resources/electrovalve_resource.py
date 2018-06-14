@@ -1,62 +1,50 @@
 from flask_restful import Resource
 from flask import jsonify, make_response
 
-from waterberry.facade.job_facade import JobFacade
-from waterberry.facade.pin_facade import PinFacade
 from waterberry.utils.messages import *
+from waterberry.utils.logger import logger
+
+class Forbidden(Exception):
+    pass
 
 class ElectrovalveResource(Resource):
     def __init__(self, **kwargs):
-        self.job_facade = JobFacade(kwargs['scheduler'])
-        self.pin_facade = PinFacade(kwargs['mongo'])
-
-    def __isPinAlreadyInUse(self, property, json, data):
-        available_pins = map(lambda pin : pin, self.pin_facade.getAvailablePins())
-        if data is None:
-            return json[property] not in available_pins
-        else:
-            return json[property] != data[property] and json[property] not in available_pins
+        self.electrovalve_dao = kwargs['electrovalve_dao']
+        self.gpio_dao = kwargs['gpio_dao']
+        self.job_factory = kwargs['job_factory']
 
     def validatePin(self, electrovalve, data=None):
-        if self.__isPinAlreadyInUse('electrovalve_pin', electrovalve, data):
-            return make_response(jsonify({'message':
-                ELECTROVALVE_PIN_ALREADY_IN_USE.format(electrovalve['electrovalve_pin'])}), 403)
 
-        if electrovalve['mode'] == 'automatic':
-            if self.__isPinAlreadyInUse('sensor_pin', electrovalve, data):
-                return make_response(jsonify({'message':
-                    SENSOR_PIN_ALREADY_IN_USE.format(electrovalve['sensor_pin'])}), 403)
+        available_pins = self.gpio_dao.getAvailablePinList()
+        current_electovalve_pin = None
+        current_sensor_pin = None
+        if data is not None:
+            current_sensor_pin = data['sensor_pin'] if 'sensor_pin' in data else None
+            current_electovalve_pin = data['electrovalve_pin'] if 'electrovalve_pin' in data else None       
 
-    def isWatering(self, data):
-        if data['watering']:
-            return make_response(jsonify({'message': ELECTROVALVE_IS_WATERING }), 403)
+        logger.error('available_pins : {}'.format(available_pins))
 
-    def removeJob(self, electrovalve, electrovalve_id):
-        if electrovalve['mode'] == 'manual':
-            self.job_facade.removeManualJob(electrovalve_id)
-        elif electrovalve['mode'] == 'automatic':
-            self.job_facade.removeAutomaticJob(electrovalve_id)
-        elif electrovalve['mode'] == 'scheduled':
-            for count, calendar in enumerate(electrovalve['timetable']):
-                self.job_facade.removeScheduledJob(count, electrovalve_id)
+        electrovalve_pin = electrovalve['electrovalve_pin']
+        sensor_pin = electrovalve['sensor_pin'] if 'sensor_pin' in electrovalve else None
 
-    def addJob(self, electrovalve, electrovalve_id):
-        if electrovalve['mode'] == 'manual':
-            self.job_facade.removeManualJob(electrovalve_id)
-            self.job_facade.addManualJob(electrovalve_id)
-        elif electrovalve['mode'] == 'automatic':
-            self.job_facade.removeAutomaticJob(electrovalve_id)
-            self.job_facade.addAutomaticJob(electrovalve_id)
-        elif electrovalve['mode'] == 'scheduled':
-            for count, calendar in enumerate(electrovalve['timetable']):
-                self.job_facade.removeScheduledJob(count, electrovalve_id)
-                self.job_facade.addScheduledJob(count, calendar, electrovalve_id)
+        logger.error('electrovalve_pin : {}'.format(electrovalve_pin))
+        logger.error('sensor_pin : {}'.format(sensor_pin))
 
-    def rescheduleJob(self, electrovalve, electrovalve_id):
-        if electrovalve['mode'] == 'manual':
-            self.job_facade.rescheduleManualJob(electrovalve_id)
-        elif electrovalve['mode'] == 'automatic':
-            self.job_facade.rescheduleAutomaticJob(electrovalve_id)
-        elif electrovalve['mode'] == 'scheduled':
-            for count, calendar in enumerate(electrovalve['timetable']):
-                self.job_facade.rescheduleScheduledJob(count, calendar, electrovalve_id)
+        if sensor_pin is not None and sensor_pin == electrovalve_pin:
+            message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(electrovalve_pin)
+            raise Forbidden(jsonify({'message': message}))
+
+        if electrovalve_pin not in available_pins + [current_electovalve_pin, current_sensor_pin]:
+            logger.error('electrovalve_pin already in use ...')
+            message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(electrovalve_pin)
+            raise Forbidden(jsonify({'message': message}))
+
+        if sensor_pin is not None and sensor_pin not in available_pins + [current_electovalve_pin, current_sensor_pin]:
+            logger.error('sensor_pin already in use ...')
+            message = SENSOR_PIN_ALREADY_IN_USE.format(sensor_pin)
+            raise Forbidden(jsonify({'message': message}))
+
+    def isWatering(self, electrovalve):
+        if electrovalve['watering']:
+            message = ELECTROVALVE_IS_WATERING
+            raise Forbidden(jsonify({'message': message}))

@@ -3,25 +3,19 @@ from pytz import utc
 
 from flask import Flask
 from flask_restful import Api
-from db.pymongo import mongo
-
 from flask_socketio import SocketIO, emit
-from socket.socket import ElectrovalveSocket
 
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.jobstores.mongodb import MongoDBJobStore
-from apscheduler.executors.pool import ThreadPoolExecutor
-
-from waterberry.facade.gpio_facade import GPIOFacade
+from waterberry.socket.socket import ElectrovalveSocket
+from waterberry.db.dao_factory import DaoFactory
+from waterberry.jobs.job_factory import JobFactory
+from waterberry.scheduler.scheduler import Scheduler
+from waterberry.gpio.board import Board
 from waterberry.resources.electrovalve import Electrovalve
 from waterberry.resources.electrovalve_list import ElectrovalveList
 from waterberry.resources.pin_list import PinList
 from waterberry.utils.json_encoder import CustomJSONEncoder
 from waterberry.utils.logger import logger
 
-MONGO_HOST = 'localhost'
-MONGO_PORT = 27017
-MONGO_DBNAME = 'waterberry_db'
 logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('socketio').setLevel(logging.ERROR)
 logging.getLogger('engineio').setLevel(logging.ERROR)
@@ -34,31 +28,27 @@ app.json_encoder = CustomJSONEncoder
 def root():
     return app.send_static_file('index.html')
 
-app.config['MONGO_HOST'] = MONGO_HOST
-app.config['MONGO_PORT'] = MONGO_PORT
-app.config["MONGO_DBNAME"] = MONGO_DBNAME
+board = Board()
+dao_factory = DaoFactory()
 
-mongo.init_app(app, config_prefix='MONGO')
-mongo.app = app
+app = dao_factory.initApp(app)
+electrovalve_dao = dao_factory.createElectrovalveDAO()
+gpio_dao = dao_factory.createGPIODAO()
+
+scheduler = Scheduler(app)
+scheduler = scheduler.getScheduler()
+job_factory = JobFactory(scheduler, gpio_dao, board)
+
 socketio = SocketIO(app, logger=True,  engineio_logger=True)
-socketio.on_namespace(ElectrovalveSocket(socketio))
-
-jobstores = {
-    'default': MongoDBJobStore(host=MONGO_HOST, port=MONGO_PORT)
-}
-executors = {
-    'default': ThreadPoolExecutor(20)
-}
-scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors)
-scheduler.start()
+socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, board))
 
 api = Api(app)
 
 api.add_resource(Electrovalve, '/api/electrovalves/<string:electrovalve_id>',
-    resource_class_kwargs={ 'mongo': mongo, 'scheduler': scheduler})
+    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory})
 api.add_resource(ElectrovalveList, '/api/electrovalves',
-    resource_class_kwargs={ 'mongo': mongo, 'scheduler': scheduler})
-api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'mongo': mongo})
+    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory})
+api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'gpio_dao': gpio_dao})
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)
