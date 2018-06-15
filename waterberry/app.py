@@ -36,6 +36,7 @@ app = dao_factory.initApp(app)
 electrovalve_dao = dao_factory.createElectrovalveDAO()
 gpio_dao = dao_factory.createGPIODAO()
 dht_sensor_dao = dao_factory.createDHTSensorDAO()
+dht_sensor_dao.initSensor()
 
 sensor_data = dht_sensor_dao.getSensorData()
 dht_sensor = DHTSensor(sensor_data['type'], sensor_data['pin'])
