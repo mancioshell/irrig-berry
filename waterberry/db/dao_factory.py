@@ -1,7 +1,8 @@
 from flask_pymongo import PyMongo
 from waterberry.utils.logger import logger
-from waterberry.db.electrovalveDAO import ElectrovalveDAO
+from waterberry.db.electrovalve_dao import ElectrovalveDAO
 from waterberry.db.gpio_dao import GPIODAO
+from waterberry.db.dht_sensor_dao import DHTSensorDAO
 
 MONGO_HOST = '10.0.2.15'
 MONGO_PORT = 27017
@@ -25,3 +26,6 @@ class DaoFactory:
 
     def createGPIODAO(self):
         return GPIODAO(database)
+
+    def createDHTSensorDAO(self):
+        return DHTSensorDAO(database)

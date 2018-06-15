@@ -10,6 +10,7 @@ from waterberry.db.dao_factory import DaoFactory
 from waterberry.jobs.job_factory import JobFactory
 from waterberry.scheduler.scheduler import Scheduler
 from waterberry.gpio.board import Board
+from waterberry.gpio.dht_sensor import DHTSensor
 from waterberry.resources.electrovalve import Electrovalve
 from waterberry.resources.electrovalve_list import ElectrovalveList
 from waterberry.resources.pin_list import PinList
@@ -34,13 +35,17 @@ dao_factory = DaoFactory()
 app = dao_factory.initApp(app)
 electrovalve_dao = dao_factory.createElectrovalveDAO()
 gpio_dao = dao_factory.createGPIODAO()
+dht_sensor_dao = dao_factory.createDHTSensorDAO()
+
+sensor_data = dht_sensor_dao.getSensorData()
+dht_sensor = DHTSensor(sensor_data['type'], sensor_data['pin'])
 
 scheduler = Scheduler(app)
 scheduler = scheduler.getScheduler()
 job_factory = JobFactory(scheduler, gpio_dao, board)
 
 socketio = SocketIO(app, logger=True,  engineio_logger=True)
-socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, board))
+socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor))
 
 api = Api(app)
 

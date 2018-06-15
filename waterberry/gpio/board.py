@@ -1,11 +1,6 @@
 #import RPi.GPIO as GPIO
-#import Adafruit_DHT
 
 from waterberry.utils.logger import logger
-
-#SENSOR_TYPE = Adafruit_DHT.DHT11
-SENSOR_TYPE = 11
-TEMP_HUMIDITY_PIN = 22
 
 class Board:
     def __init__(self):
@@ -15,12 +10,6 @@ class Board:
         logger.debug('int bread board ...')
         #GPIO.setwarnings(False)
         #GPIO.setmode(GPIO.BOARD)
-
-    def getSensorData(self):
-        #humidity, temperature = Adafruit_DHT.read_retry(SENSOR_TYPE, TEMP_HUMIDITY_PIN)
-        humidity, temperature = 2, 3
-        logger.debug('getSensorData ... humidity : {} - temperature: {}'.format(humidity, temperature))
-        return humidity, temperature
 
     def setupOutputPin(self, pin):
         logger.debug('setupOutputPin ... {}'.format(pin))

@@ -9,15 +9,14 @@ thread_lock = Lock()
 
 class ElectrovalveSocket(Namespace):
 
-    def __init__(self, socketio, electrovalve_dao, board):
+    def __init__(self, socketio, electrovalve_dao, dht_sensor):
         self.socketio = socketio
         self.electrovalve_dao = electrovalve_dao
-        self.board = board
+        self.dht_sensor = dht_sensor
         super(ElectrovalveSocket, self).__init__()
 
     def __extractData(self, electrovalve):
-        self.board.initBoard()
-        air_humidity, air_temperature = self.board.getSensorData()
+        air_humidity, air_temperature = self.dht_sensor.getData()
         current_humidity = electrovalve['current_humidity'] if 'current_humidity' in electrovalve else None
         last_water = str(electrovalve['last_water']) if 'last_water' in electrovalve else None
 
