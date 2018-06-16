@@ -36,7 +36,7 @@ class ElectrovalveSocket(Namespace):
                 data = map(self.__extractData, electrovalves)
                 self.socketio.emit('data', data, json=True)
 
-            self.socketio.sleep(3)
+            self.socketio.sleep(3)   
 
     def on_connect(self):
         global thread

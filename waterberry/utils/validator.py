@@ -41,3 +41,7 @@ class ElectrovalveSchema(Schema):
             raise ValidationError('Scheduled mode requires timetable field')
         if data['mode'] != 'scheduled' and 'timetable' in data:
             raise ValidationError('timetable field is valid only for scheduled mode')
+
+class DHTSensorSchema(Schema):
+    type = fields.String(required=True, validate=lambda x: x in ['DHT11', 'DHT22', 'AM2302'])
+    pin = fields.String(required=True)

@@ -1,5 +1,6 @@
 import logging
 from pytz import utc
+import os
 
 from flask import Flask
 from flask_restful import Api
@@ -14,6 +15,8 @@ from waterberry.gpio.dht_sensor import DHTSensor
 from waterberry.resources.electrovalve import Electrovalve
 from waterberry.resources.electrovalve_list import ElectrovalveList
 from waterberry.resources.pin_list import PinList
+from waterberry.resources.dht_sensor_resource import Sensor
+from waterberry.resources.dht_sensor_list_resource import SensorList
 from waterberry.utils.json_encoder import CustomJSONEncoder
 from waterberry.utils.logger import logger
 
@@ -21,6 +24,8 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('socketio').setLevel(logging.ERROR)
 logging.getLogger('engineio').setLevel(logging.ERROR)
 logging.getLogger('werkzeug').setLevel(logging.ERROR)
+
+print os.environ['PLATFORM']
 
 app = Flask(__name__, static_url_path='', static_folder='public')
 app.json_encoder = CustomJSONEncoder
@@ -38,8 +43,7 @@ gpio_dao = dao_factory.createGPIODAO()
 dht_sensor_dao = dao_factory.createDHTSensorDAO()
 dht_sensor_dao.initSensor()
 
-sensor_data = dht_sensor_dao.getSensorData()
-dht_sensor = DHTSensor(sensor_data['type'], sensor_data['pin'])
+dht_sensor = DHTSensor(dht_sensor_dao, gpio_dao)
 
 scheduler = Scheduler(app)
 scheduler = scheduler.getScheduler()
@@ -54,7 +58,11 @@ api.add_resource(Electrovalve, '/api/electrovalves/<string:electrovalve_id>',
     resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory})
 api.add_resource(ElectrovalveList, '/api/electrovalves',
     resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory})
+
 api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'gpio_dao': gpio_dao})
+
+api.add_resource(Sensor, '/api/sensor', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'gpio_dao': gpio_dao})
+api.add_resource(SensorList, '/api/sensors', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao})
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)

@@ -13,8 +13,8 @@ def AutomaticElectrovalve(electrovalve_id):
 
         electrovalve = electrovalve_dao.getElectrovalveById(electrovalve_id)
 
-        logger.info('Soil sensor for electrovalve with id {} has observed humidity {}%'
-            .format(electrovalve_id, electrovalve['current_humidity']))
+        logger.info('Soil sensor for electrovalve with id {} has observed humidity {}% \with the humidity threshold {}%'
+            .format(electrovalve_id, electrovalve['current_humidity'], electrovalve['humidity_threshold']))
 
         electrovalve_pin = gpio_dao.getPinByName(electrovalve['electrovalve_pin'])
 
@@ -25,7 +25,7 @@ def AutomaticElectrovalve(electrovalve_id):
             board.setupOutputPin(electrovalve_pin)
             board.enablePin(electrovalve_pin)
 
-            logger.info('watering for ... {} seconds'.format(electrovalve['duration']))
+            logger.error('watering for ... {} seconds'.format(electrovalve['duration']))
             time.sleep(electrovalve['duration'])
 
             board.disablePin(electrovalve_pin)
