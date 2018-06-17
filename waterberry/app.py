@@ -49,6 +49,8 @@ scheduler = Scheduler(app)
 scheduler = scheduler.getScheduler()
 job_factory = JobFactory(scheduler, gpio_dao, board)
 
+job_factory.makeJob('dht_sensor').add()
+
 socketio = SocketIO(app, logger=True,  engineio_logger=True)
 socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor))
 

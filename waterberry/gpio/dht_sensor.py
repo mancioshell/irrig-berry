@@ -28,7 +28,7 @@ class DHTSensor:
         self.dht_sensor_dao = dht_sensor_dao
         self.gpio_dao = gpio_dao
 
-    def getData(self):
+    def readData(self):
         sensor_data = self.dht_sensor_dao.getSensorData()
         sensor_type = sensor_data['type']
         pin = self.gpio_dao.getPinByName(sensor_data['pin'])
@@ -39,3 +39,11 @@ class DHTSensor:
             humidity, temperature = 2, 3
         logger.debug('getSensorData ... humidity : {} - temperature: {}'.format(humidity, temperature))
         return humidity, temperature
+
+    def getData(self):
+        return self.dht_sensor_dao.getTemperature()
+        return self.dht_sensor_dao.getHumidity()
+
+    def setData(self, humidity, temperature):
+        self.dht_sensor_dao.setTemperature(temperature)
+        self.dht_sensor_dao.setHumidity(humidity)
