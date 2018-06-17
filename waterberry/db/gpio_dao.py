@@ -1,5 +1,8 @@
-PINS = {'GPIO_0': 11, 'GPIO_1': 12, 'GPIO_2': 13, 'GPIO_3': 15,
-    'GPIO_4': 16, 'GPIO_5': 18,'GPIO_6': 22, 'GPIO_7': 7}
+# PINS = {'GPIO_0': 11, 'GPIO_1': 12, 'GPIO_2': 13, 'GPIO_3': 15,
+#     'GPIO_4': 16, 'GPIO_5': 18,'GPIO_6': 22, 'GPIO_7': 7}
+
+PINS = {'GPIO_0': 17, 'GPIO_1': 18, 'GPIO_2': 21, 'GPIO_3': 22,
+    'GPIO_4': 23, 'GPIO_5': 24,'GPIO_6': 25, 'GPIO_7': 4}
 
 class GPIODAO:
     def __init__(self, database):

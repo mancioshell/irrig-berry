@@ -17,6 +17,7 @@ class ElectrovalveSocket(Namespace):
 
     def __extractData(self, electrovalve):
         air_humidity, air_temperature = self.dht_sensor.getData()
+        logger.error("air_humidity {} - air_temperature {}".format(air_humidity, air_temperature))
         current_humidity = electrovalve['current_humidity'] if 'current_humidity' in electrovalve else None
         last_water = str(electrovalve['last_water']) if 'last_water' in electrovalve else None
 
@@ -36,7 +37,7 @@ class ElectrovalveSocket(Namespace):
                 data = map(self.__extractData, electrovalves)
                 self.socketio.emit('data', data, json=True)
 
-            self.socketio.sleep(3)   
+            self.socketio.sleep(30)
 
     def on_connect(self):
         global thread

@@ -29,7 +29,8 @@ class ElectrovalveDAO:
             electrovalve['humidity_threshold'] = None
             electrovalve['sensor_pin'] = None
 
-        logger.error(electrovalve)       
+        logger.error(electrovalve)
+        electrovalve.pop('_id', None)
         return self.database.db.electrovalve.update_one({'_id': ObjectId(id)}, {"$set":  electrovalve})
 
     def deleteElectrovalveById(self, id):

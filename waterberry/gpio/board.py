@@ -17,7 +17,7 @@ class Board:
     def initBoard(self):
         logger.debug('int bread board ...')
         if self.raspberry : GPIO.setwarnings(False)
-        if self.raspberry : GPIO.setmode(GPIO.BOARD)
+        if self.raspberry : GPIO.setmode(GPIO.BCM)
 
     def setupOutputPin(self, pin):
         logger.debug('setupOutputPin ... {}'.format(pin))
