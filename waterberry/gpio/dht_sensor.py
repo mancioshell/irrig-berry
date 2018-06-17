@@ -41,8 +41,7 @@ class DHTSensor:
         return humidity, temperature
 
     def getData(self):
-        return self.dht_sensor_dao.getTemperature()
-        return self.dht_sensor_dao.getHumidity()
+        return self.dht_sensor_dao.getHumidity(), self.dht_sensor_dao.getTemperature()
 
     def setData(self, humidity, temperature):
         self.dht_sensor_dao.setTemperature(temperature)
