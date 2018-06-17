@@ -14,7 +14,7 @@ class DHTSensorDAO:
                 result = self.database.db.dht_sensor.insert_one({'type': type, 'pin' : pin})
                 self.id = str(result.inserted_id)
             else:
-                self.id = str(result._id)
+                self.id = str(result['_id'])
 
     def getSensorTypeList(self):
         return SENSOR_TYPE_LIST
