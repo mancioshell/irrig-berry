@@ -7,7 +7,7 @@ class DHTSensorDAO:
     def __init__(self, database):
         self.database = database
 
-    def initSensor(self, type='DHT11', pin='GPIO_0'):
+    def initSensor(self, type='DHT11', pin='GPIO_6'):
         with self.database.app.app_context():
             result = self.database.db.dht_sensor.insert_one({'type': type, 'pin' : pin})
             self.id = str(result.inserted_id)
