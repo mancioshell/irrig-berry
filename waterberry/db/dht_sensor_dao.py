@@ -42,6 +42,7 @@ class DHTSensorDAO:
             return None
 
     def getHumidity(self):
+        result = self.database.db.dht_sensor.find_one({'_id': ObjectId(self.id)})
         if result is not None and 'humidity' in result:
             return result['humidity']
         else:
