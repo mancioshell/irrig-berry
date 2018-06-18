@@ -17,9 +17,16 @@ class GPIODAO:
 
     def getAvailablePinList(self):
         electrovalves = list(self.database.db.electrovalve.find())
+
+        filter_automatic_electrovalve = lambda electrovalve: electrovalve['mode'] == 'automatic'
+        map_automatic_pin = lambda electrovalve: [electrovalve['pin_di'],
+            electrovalve['pin_do'], electrovalve['pin_clk'], electrovalve['pin_cs']]
+        reduce_pin_list = lambda list1, list2: list1+list2
+
         if electrovalves is not None:
-            automatic_electrovalves = filter(lambda electrovalve: 'sensor_pin' in electrovalve, electrovalves)
-            sensor_pins = map(lambda electrovalve: electrovalve['sensor_pin'], automatic_electrovalves)
+            automatic_electrovalves = filter(filter_automatic_electrovalve, electrovalves)
+
+            sensor_pins = reduce(reduce_pin_list, map(map_automatic_pin, automatic_electrovalves))
             electrovalve_pins = map(lambda electrovalve: electrovalve['electrovalve_pin'], electrovalves)
 
             return [name for name, pin in PINS.iteritems() if name not in electrovalve_pins + sensor_pins]

@@ -23,11 +23,17 @@ class ElectrovalveDAO:
             electrovalve['timetable'] = None
         elif electrovalve['mode'] == 'scheduled':
             electrovalve['humidity_threshold'] = None
-            electrovalve['sensor_pin'] = None
+            electrovalve['pin_di'] = None
+            electrovalve['pin_do'] = None
+            electrovalve['pin_clk'] = None
+            electrovalve['pin_cs'] = None
         else:
             electrovalve['timetable'] = None
             electrovalve['humidity_threshold'] = None
-            electrovalve['sensor_pin'] = None
+            electrovalve['pin_di'] = None
+            electrovalve['pin_do'] = None
+            electrovalve['pin_clk'] = None
+            electrovalve['pin_cs'] = None
 
         logger.error(electrovalve)
         electrovalve.pop('_id', None)

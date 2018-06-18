@@ -15,7 +15,7 @@ class CreateElectrovalve extends React.Component {
   }
 
   create(newElectrovalve) {
-    let { last_water, watering, timetable, sensor_pin, humidity_threshold, ...others } = newElectrovalve;
+    let { last_water, watering, timetable, pin_di, pin_do, pin_clk, pin_cs, humidity_threshold, ...others } = newElectrovalve;
 
     let electrovalve;
 
@@ -24,7 +24,7 @@ class CreateElectrovalve extends React.Component {
         electrovalve = Object.assign({}, others)
         break;
       case 'automatic':
-        electrovalve = Object.assign({}, {sensor_pin:sensor_pin}, {humidity_threshold:humidity_threshold}, others)
+        electrovalve = Object.assign({}, {pin_di:pin_di}, {pin_do:pin_do}, {pin_clk:pin_clk}, {pin_cs:pin_cs}, {humidity_threshold:humidity_threshold}, others)
         break;
       case 'scheduled':
         electrovalve = Object.assign({}, {timetable: timetable}, others)

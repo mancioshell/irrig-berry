@@ -1,8 +1,6 @@
 #!/bin/bash
-cd waterberry
-cd public && npm install
-cd ../
-pipenv install
-pipenv shell
+export PLATFORM=local
 export FLASK_APP=app.py
-flask run --host=0.0.0.0
+export FLASK_DEBUG=1
+cd waterberry
+python -m flask run --host=0.0.0.0

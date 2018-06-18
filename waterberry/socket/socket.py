@@ -20,6 +20,7 @@ class ElectrovalveSocket(Namespace):
         logger.error("air_humidity {} - air_temperature {}".format(air_humidity, air_temperature))
         current_humidity = electrovalve['current_humidity'] if 'current_humidity' in electrovalve else None
         last_water = str(electrovalve['last_water']) if 'last_water' in electrovalve else None
+        next_water = str(electrovalve['next_water']) if 'next_water' in electrovalve else None
 
         return {
             '_id': str(electrovalve['_id']),
@@ -27,7 +28,8 @@ class ElectrovalveSocket(Namespace):
             'air_temperature': air_temperature,
             'air_humidity': air_humidity,
             'watering': electrovalve['watering'],
-            'last_water': last_water
+            'last_water': last_water,
+            'next_water': next_water
             }
 
     def __backgroundTask(self):

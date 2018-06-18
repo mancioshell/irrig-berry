@@ -46,8 +46,17 @@ class Electrovalve extends React.Component {
       if (electrovalvePins.filter(pin => pin == this.state.electrovalve.electrovalve_pin).length <= 0)
         electrovalvePins = electrovalvePins.concat(this.state.electrovalve.electrovalve_pin)
 
-      if (sensorPins.filter(pin => pin == this.state.electrovalve.sensor_pin).length <= 0)
-        sensorPins = sensorPins.concat(this.state.electrovalve.sensor_pin)
+      if (sensorPins.filter(pin => pin == this.state.electrovalve.pin_di).length <= 0)
+        sensorPins = sensorPins.concat(this.state.electrovalve.pin_di)
+
+      if (sensorPins.filter(pin => pin == this.state.electrovalve.pin_do).length <= 0)
+        sensorPins = sensorPins.concat(this.state.electrovalve.pin_do)
+
+      if (sensorPins.filter(pin => pin == this.state.electrovalve.pin_clk).length <= 0)
+        sensorPins = sensorPins.concat(this.state.electrovalve.pin_clk)
+
+      if (sensorPins.filter(pin => pin == this.state.electrovalve.pin_cs).length <= 0)
+          sensorPins = sensorPins.concat(this.state.electrovalve.pin_cs)
 
       this.setState({electrovalvePins: electrovalvePins, sensorPins: sensorPins});
     })
@@ -92,15 +101,16 @@ class Electrovalve extends React.Component {
 
   handleSensorPinSelect(event) {
     let value = event.target.value
+    const name = target.name;
 
     let newElectrovalvePins = this.state.electrovalvePins.filter(pin => {
       return pin != value
     }).filter(pin => {
-      return pin != this.state.electrovalve.sensor_pin
-    }).concat(this.state.electrovalve.sensor_pin)
+      return pin != this.state.electrovalve[name]
+    }).concat(this.state.electrovalve[name])
 
     let electrovalve = Object.assign({}, this.state.electrovalve);
-    electrovalve.sensor_pin = value
+    electrovalve[name] = value
 
     this.setState({electrovalvePins: newElectrovalvePins, electrovalve: electrovalve});
   }
@@ -167,9 +177,9 @@ class Electrovalve extends React.Component {
               if (this.state.electrovalve.mode == 'automatic') {
                 return (<div className="form-row">
                   <div className="col-md-6 mb-3">
-                    <label htmlFor="sensorId">Pin sensore
+                    <label htmlFor="pin_di">Pin DI
                     </label>
-                    <select name="sensor_pin" id="sensor_pin" onChange={this.handleSensorPinSelect} value={this.state.electrovalve.sensor_pin} className="custom-select custom-select-sm">
+                    <select name="pin_di" id="pin_di" onChange={this.handleSensorPinSelect} value={this.state.electrovalve.pin_di} className="custom-select custom-select-sm">
                       <option value="">Scegli il pin</option>
                         {
                           (() => {
@@ -181,14 +191,75 @@ class Electrovalve extends React.Component {
                     </select>
                   </div>
                   <div className="col-md-6 mb-3">
-                    <label htmlFor="tresholdId">Soglia Umidità</label>
-                    <input name="humidity_threshold" min="1" max="100" onChange={this.handleChange} type="number" defaultValue={this.state.electrovalve.humidity_threshold} className="form-control form-control-sm" id="tresholdId" aria-describedby="treshold"/>
+                    <label htmlFor="pin_do">Pin DO
+                    </label>
+                    <select name="pin_do" id="pin_do" onChange={this.handleSensorPinSelect} value={this.state.electrovalve.pin_do} className="custom-select custom-select-sm">
+                      <option value="">Scegli il pin</option>
+                        {
+                          (() => {
+                            return this.state.sensorPins.map((pin, index) => {
+                              return (<option key={index} value={pin}>{pin}</option>)
+                            });
+                          })()
+                        }
+                    </select>
                   </div>
                 </div>)
               }
             })()
           }
 
+          {
+            (() => {
+              if (this.state.electrovalve.mode == 'automatic') {
+                return (<div className="form-row">
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="pin_clk">Pin DI
+                    </label>
+                    <select name="pin_clk" id="pin_clk" onChange={this.handleSensorPinSelect} value={this.state.electrovalve.pin_clk} className="custom-select custom-select-sm">
+                      <option value="">Scegli il pin</option>
+                        {
+                          (() => {
+                            return this.state.sensorPins.map((pin, index) => {
+                              return (<option key={index} value={pin}>{pin}</option>)
+                            });
+                          })()
+                        }
+                    </select>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="pin_cs">Pin DO
+                    </label>
+                    <select name="pin_cs" id="pin_cs" onChange={this.handleSensorPinSelect} value={this.state.electrovalve.pin_cs} className="custom-select custom-select-sm">
+                      <option value="">Scegli il pin</option>
+                        {
+                          (() => {
+                            return this.state.sensorPins.map((pin, index) => {
+                              return (<option key={index} value={pin}>{pin}</option>)
+                            });
+                          })()
+                        }
+                    </select>
+                  </div>
+                </div>)
+              }
+            })()
+          }
+
+
+          {
+            (() => {
+              if (this.state.electrovalve.mode == 'automatic') {
+                return (
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="tresholdId">Soglia Umidità</label>
+                    <input name="humidity_threshold" min="1" max="100" onChange={this.handleChange} type="number" defaultValue={this.state.electrovalve.humidity_threshold} className="form-control form-control-sm" id="tresholdId" aria-describedby="treshold"/>
+                  </div>
+                )
+              }
+            })()
+          }
+          
           {
             (() => {
               if (this.state.electrovalve.mode == 'scheduled') {

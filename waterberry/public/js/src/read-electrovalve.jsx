@@ -132,9 +132,36 @@ class ReadElectrovalve extends React.Component {
               if (this.state.electrovalve.mode == 'automatic') {
                 return (<div className="form-row">
                   <div className="col-md-6 mb-3">
-                    <label htmlFor="sensorId">Pin sensore</label>
+                    <label htmlFor="pin_diId">Pin DI</label>
                     <p>
-                      <b>{this.state.electrovalve.sensor_pin}</b>
+                      <b>{this.state.electrovalve.pin_di}</b>
+                    </p>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="pin_doId">Pin DO</label>
+                    <p>
+                      <b>{this.state.electrovalve.pin_do}</b>
+                    </p>
+                  </div>
+                </div>)
+              }
+            })()
+          }
+
+          {
+            (() => {
+              if (this.state.electrovalve.mode == 'automatic') {
+                return (<div className="form-row">
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="pin_clkId">Pin Clock</label>
+                    <p>
+                      <b>{this.state.electrovalve.pin_clk}</b>
+                    </p>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="pin_csId">Pin CS</label>
+                    <p>
+                      <b>{this.state.electrovalve.pin_cs}</b>
                     </p>
                   </div>
                 </div>)

@@ -19,7 +19,10 @@ class AutomaticJob:
     def remove(self, electrovalve_id, electrovalve):
         self.board.initBoard()
         self.board.cleanupPin(self.gpio_dao.getPinByName(electrovalve['electrovalve_pin']))
-        self.board.cleanupPin(self.gpio_dao.getPinByName(electrovalve['sensor_pin']))
+        self.board.cleanupPin(self.gpio_dao.getPinByName(electrovalve['pin_di']))
+        self.board.cleanupPin(self.gpio_dao.getPinByName(electrovalve['pin_do']))
+        self.board.cleanupPin(self.gpio_dao.getPinByName(electrovalve['pin_clk']))
+        self.board.cleanupPin(self.gpio_dao.getPinByName(electrovalve['pin_cs']))
         job_id = "{}_soil".format(electrovalve_id)
         try:
             self.scheduler.remove_job(electrovalve_id)

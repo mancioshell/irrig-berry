@@ -21,9 +21,9 @@ from waterberry.utils.json_encoder import CustomJSONEncoder
 from waterberry.utils.logger import logger
 
 logging.basicConfig(level=logging.DEBUG)
-logging.getLogger('socketio').setLevel(logging.ERROR)
-logging.getLogger('engineio').setLevel(logging.ERROR)
-logging.getLogger('werkzeug').setLevel(logging.ERROR)
+logging.getLogger('socketio').setLevel(logging.INFO)
+logging.getLogger('engineio').setLevel(logging.INFO)
+logging.getLogger('werkzeug').setLevel(logging.INFO)
 
 print os.environ['PLATFORM']
 
@@ -52,8 +52,8 @@ job_factory = JobFactory(scheduler, gpio_dao, board)
 job_factory.makeJob('dht_sensor').remove()
 job_factory.makeJob('dht_sensor').add()
 
-socketio = SocketIO(app, logger=True,  engineio_logger=True)
-socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor))
+#socketio = SocketIO(app, logger=True,  engineio_logger=True)
+#socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor))
 
 api = Api(app)
 
@@ -68,4 +68,6 @@ api.add_resource(Sensor, '/api/sensor', resource_class_kwargs={ 'dht_sensor_dao'
 api.add_resource(SensorList, '/api/sensors', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao})
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    print "prova ..."
+    app.run(debug=True)
+    #socketio.run(app, debug=True)
