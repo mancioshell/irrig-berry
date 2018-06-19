@@ -6,6 +6,7 @@ from waterberry.utils.logger import logger
 
 class Sensor(Resource):
     def __init__(self, **kwargs):
+        self.electrovalve_dao = kwargs['electrovalve_dao']
         self.dht_sensor_dao = kwargs['dht_sensor_dao']
         self.gpio_dao = kwargs['gpio_dao']
 
@@ -19,7 +20,8 @@ class Sensor(Resource):
         if errors:
            return make_response(jsonify({'message': errors}), 400)
 
-        available_pins = self.gpio_dao.getAvailablePinList()
+        electrovalves = self.electrovalve_dao.getElectrovalveList()
+        available_pins = self.gpio_dao.getAvailablePinList(electrovalves)
 
         if dht_sensor['pin'] not in available_pins:
             logger.error('dht sensor pin already in use ...')

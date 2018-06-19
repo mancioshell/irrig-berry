@@ -108,7 +108,7 @@ class ReadElectrovalve extends React.Component {
           &nbsp;Elimina
         </button>
       </div>
-      <img className="card-img-top img-card" src="img/gerani2.jpg" alt="Card image cap"/>
+      <img className="card-img-top img-card" src="img/gerani.jpg" alt="Card image cap"/>
       <div className="card-body">
         <form>
           <div className="form-row">

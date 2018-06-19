@@ -4,7 +4,7 @@ import os
 from waterberry.utils.logger import logger
 
 config = configparser.ConfigParser()
-config.read('config/waterberry.config')
+config.read('/media/sf_Projects/waterberry/waterberry/config/waterberry.config')
 raspberry = config.getboolean(os.environ['PLATFORM'], 'RPI_GPIO')
 
 if raspberry:

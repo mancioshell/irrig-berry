@@ -8,7 +8,7 @@ from waterberry.db.gpio_dao import GPIODAO
 from waterberry.db.dht_sensor_dao import DHTSensorDAO
 
 config = configparser.ConfigParser()
-config.read('config/waterberry.config')
+config.read('/media/sf_Projects/waterberry/waterberry/config/waterberry.config')
 
 database = PyMongo()
 

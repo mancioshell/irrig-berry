@@ -35,7 +35,7 @@ class ElectrovalveDAO:
             electrovalve['pin_clk'] = None
             electrovalve['pin_cs'] = None
 
-        logger.error(electrovalve)
+        logger.info(electrovalve)
         electrovalve.pop('_id', None)
         return self.database.db.electrovalve.update_one({'_id': ObjectId(id)}, {"$set":  electrovalve})
 

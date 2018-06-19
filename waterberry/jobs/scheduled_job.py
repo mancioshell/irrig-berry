@@ -1,14 +1,13 @@
 from datetime import datetime
 
 from apscheduler.jobstores.base import JobLookupError
-from waterberry.executors.manual_electrovalve import ManualElectrovalve
+from waterberry.executors.manual_electrovalve import ManualElectrovalveExecutor
 from waterberry.executors.next_watering import NextWaterExecutor
 from waterberry.utils.logger import logger
 
 class ScheduledJob:
-    def __init__(self, scheduler, gpio_dao, board):
+    def __init__(self, scheduler, board):
         self.scheduler = scheduler
-        self.gpio_dao = gpio_dao
         self.board = board
 
     def add(self, electrovalve_id, electrovalve):
@@ -21,7 +20,7 @@ class ScheduledJob:
 
             time = datetime.strptime(date_time, '%H:%M')
 
-            self.scheduler.add_job(ManualElectrovalve, 'cron', day_of_week=day_of_week,
+            self.scheduler.add_job(ManualElectrovalveExecutor, 'cron', day_of_week=day_of_week,
                 hour=time.hour, minute=time.minute, args=[electrovalve_id], id=job_id)
 
         self.scheduler.add_job(NextWaterExecutor, 'interval', minutes=30, args=[electrovalve_id],
@@ -31,7 +30,7 @@ class ScheduledJob:
     def remove(self, electrovalve_id, electrovalve):
         timetable = electrovalve['timetable']
         self.board.initBoard()
-        self.board.cleanupPin(self.gpio_dao.getPinByName(electrovalve['electrovalve_pin']))
+        self.board.cleanupPin(electrovalve['electrovalve_pin'])
 
         for count, calendar in enumerate(timetable):
             job_id = "{}_{}".format(electrovalve_id, count)

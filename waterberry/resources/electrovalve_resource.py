@@ -14,8 +14,8 @@ class ElectrovalveResource(Resource):
         self.job_factory = kwargs['job_factory']
 
     def validatePin(self, electrovalve, data=None):
-
-        available_pins = self.gpio_dao.getAvailablePinList()
+        electrovalves = self.electrovalve_dao.getElectrovalveList()
+        available_pins = self.gpio_dao.getAvailablePinList(electrovalves)
 
         current_electovalve_pin = None
         current_pin_di = None
@@ -35,24 +35,24 @@ class ElectrovalveResource(Resource):
         pin_clk = electrovalve['pin_clk'] if 'pin_clk' in electrovalve else None
         pin_cs = electrovalve['pin_cs'] if 'pin_cs' in electrovalve else None
 
-        logger.error('electrovalve_pin : {}'.format(electrovalve_pin))
-        logger.error('pin_di : {}'.format(pin_di))
-        logger.error('pin_do : {}'.format(pin_do))
-        logger.error('pin_clk : {}'.format(pin_clk))
-        logger.error('pin_cs : {}'.format(pin_cs))
+        logger.info('electrovalve_pin : {}'.format(electrovalve_pin))
+        logger.info('pin_di : {}'.format(pin_di))
+        logger.info('pin_do : {}'.format(pin_do))
+        logger.info('pin_clk : {}'.format(pin_clk))
+        logger.info('pin_cs : {}'.format(pin_cs))
 
-        logger.error('available_pins : {}'.format(available_pins))
+        logger.info('available_pins : {}'.format(available_pins))
 
-        data_pin_list = set(current_electovalve_pin, current_pin_di, current_pin_do, current_pin_clk, current_pin_cs)
-        electrovalve_pin_list = set(electrovalve_pin, pin_di, pin_do, pin_clk, pin_cs)
+        data_pin_list = set([current_electovalve_pin, current_pin_di, current_pin_do, current_pin_clk, current_pin_cs])
+        electrovalve_pin_list = set([electrovalve_pin, pin_di, pin_do, pin_clk, pin_cs])
 
-        if len(data_pin_list) != len(electrovalve_pin_list):
-            message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(electrovalve_pin)
+        if electrovalve['mode'] == 'automatic' and len(electrovalve_pin_list) < 5:
+            message = DUPLICATE_PINS.format(electrovalve_pin_list)
             raise Forbidden(jsonify({'message': message}))
 
         for pin in electrovalve_pin_list:
-            if pin not in available_pins + list(data_pin_list):
-                logger.error('pin already in use ...')
+            if pin is not None and pin not in available_pins + list(data_pin_list):
+                logger.pin('pin already in use ...')
                 message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(electrovalve_pin)
                 raise Forbidden(jsonify({'message': message}))
 

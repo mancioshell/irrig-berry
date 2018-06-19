@@ -17,7 +17,7 @@ def NextWaterExecutor(electrovalve_id):
 
         jobs = scheduler.get_jobs()
         selected_jobs = filter(filter_job_by_id, jobs)
-        next_job = reduce(next_run_time_job, selected_jobs)
+        next_job = reduce(next_run_time_job, selected_jobs, [])
 
         electrovalve = electrovalve_dao.getElectrovalveById(electrovalve_id)
         electrovalve['next_water'] = next_job.next_run_time.utcnow()

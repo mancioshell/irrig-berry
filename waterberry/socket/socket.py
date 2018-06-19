@@ -17,7 +17,7 @@ class ElectrovalveSocket(Namespace):
 
     def __extractData(self, electrovalve):
         air_humidity, air_temperature = self.dht_sensor.getData()
-        logger.error("air_humidity {} - air_temperature {}".format(air_humidity, air_temperature))
+        logger.info("air_humidity {} - air_temperature {}".format(air_humidity, air_temperature))
         current_humidity = electrovalve['current_humidity'] if 'current_humidity' in electrovalve else None
         last_water = str(electrovalve['last_water']) if 'last_water' in electrovalve else None
         next_water = str(electrovalve['next_water']) if 'next_water' in electrovalve else None

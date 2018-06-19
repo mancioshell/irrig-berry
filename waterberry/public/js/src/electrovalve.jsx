@@ -101,7 +101,7 @@ class Electrovalve extends React.Component {
 
   handleSensorPinSelect(event) {
     let value = event.target.value
-    const name = target.name;
+    const name = event.target.name;
 
     let newElectrovalvePins = this.state.electrovalvePins.filter(pin => {
       return pin != value
@@ -250,16 +250,16 @@ class Electrovalve extends React.Component {
           {
             (() => {
               if (this.state.electrovalve.mode == 'automatic') {
-                return (
+                return (<div className="form-row">
                   <div className="col-md-6 mb-3">
                     <label htmlFor="tresholdId">Soglia Umidità</label>
                     <input name="humidity_threshold" min="1" max="100" onChange={this.handleChange} type="number" defaultValue={this.state.electrovalve.humidity_threshold} className="form-control form-control-sm" id="tresholdId" aria-describedby="treshold"/>
                   </div>
-                )
+                </div>)
               }
             })()
           }
-          
+
           {
             (() => {
               if (this.state.electrovalve.mode == 'scheduled') {

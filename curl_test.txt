@@ -1,1 +1,0 @@
-curl --noproxy "*" -X POST -H "Content-Type: application/json" -d '{"mode":"automatic", "name": "prova", "humidity_threshold":23, "electrovalve_pin":12, "sensor_pin":2, "duration": 20, "timetable" : [{"day": "mon", "time": "3:43"},{"day": "fri", "time": "19:43"}]}' http://localhost:5000/api/electrovalves
