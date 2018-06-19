@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {Link} from "react-router-dom";
+
 export default function Nav() {
   return (<nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <a className="navbar-brand" href="#">WaterBerry</a>
@@ -10,12 +12,10 @@ export default function Nav() {
     <div className="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul className="navbar-nav mr-auto">
         <li className="nav-item active">
-          <a className="nav-link" href="#">Elettrovalvole
-            <span className="sr-only">(current)</span>
-          </a>
+          <Link className="nav-link" to="/electrovalves">Elettrovalvole</Link>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="#">Configura</a>
+          <Link className="nav-link" to="/configure">Configura</Link>
         </li>
       </ul>
       </div>
