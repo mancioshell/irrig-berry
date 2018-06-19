@@ -17,7 +17,7 @@ class UpdateElectrovalve extends React.Component {
   }
 
   update(updated_electrovalve) {
-    let { last_water, watering, timetable, sensor_pin, humidity_threshold, ...others } = updated_electrovalve;
+    let { last_water, watering, timetable, pin_di, pin_do, pin_clk, pin_cs, humidity_threshold, ...others } = updated_electrovalve;
     let electrovalve;
 
     switch (updated_electrovalve.mode) {
@@ -25,7 +25,7 @@ class UpdateElectrovalve extends React.Component {
         electrovalve = Object.assign({}, others)
         break;
       case 'automatic':
-        electrovalve = Object.assign({}, {sensor_pin:sensor_pin}, {humidity_threshold:humidity_threshold}, others)
+        electrovalve = Object.assign({}, {pin_di:pin_di}, {pin_do:pin_do}, {pin_clk:pin_clk}, {pin_cs:pin_cs}, {humidity_threshold:humidity_threshold}, others)
         break;
       case 'scheduled':
         electrovalve = Object.assign({}, {timetable: timetable}, others)

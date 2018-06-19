@@ -3,7 +3,7 @@ body {
 }
 
 .img-card {
-  opacity: 1;
+  opacity: 0.3;
   display: block;
   width: 100%;
   height: auto;
@@ -32,16 +32,12 @@ body {
 
 .fig-overlay {
   transition: .5s ease;
+  margin: 150px 0;
   opacity: 0;
-  position: absolute;
-  bottom: 20%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%)
 }
 
 .card-container:hover .img-card  {
-  opacity: 0.3;
+  opacity: 1;
 }
 
 .card-container:hover .overlay {
@@ -54,4 +50,40 @@ body {
 
 .fig-container:hover .fig-overlay {
   opacity: 1;
+}
+
+.card-dashed {
+  border-style: dashed;
+  border-width: 2px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+h1{font-size: 2.5rem}
+h4{font-size: 1rem}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  h1{font-size: 3rem}
+  h4{font-size: 1rem}
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  h1{font-size: 3.5rem}
+  h4{font-size: 1.25rem}
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  h1{font-size: 4rem}
+  h4{font-size: 1.5rem}
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  h1{font-size: 4.5rem}
+  h4{font-size: 1.75rem}
 }
