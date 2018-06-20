@@ -63,3 +63,6 @@ class ElectrovalveSchema(Schema):
 class DHTSensorSchema(Schema):
     type = fields.String(required=True, validate=lambda x: x in ['DHT11', 'DHT22', 'AM2302'])
     pin = fields.String(required=True)
+
+class RaspberrySchema(Schema):
+    model = fields.String(required=True, validate=lambda x: x in ['P1_MOD_B_REV1', 'P1_MOD_B_REV2', 'P1_MOD_B+', 'P2_MOD_B'])
