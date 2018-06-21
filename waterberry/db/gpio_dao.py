@@ -38,7 +38,7 @@ class GPIODAO:
         pins = filter(lambda model: model['id'] == raspberry['model'], raspberry['models'])[0]['gpio']
         return pins[name]
 
-    def getAvailablePinList(self, electrovalves):
+    def getAvailablePinList(self, electrovalves, dht_sensor_pin):
         raspberry = self.database.db.gpio.find_one({'_id': ObjectId(self.id)})
         pins = filter(lambda model: model['id'] == raspberry['model'], raspberry['models'])[0]['gpio']
 
@@ -54,6 +54,6 @@ class GPIODAO:
             sensor_pins = reduce(reduce_pin_list, map(map_automatic_pin, automatic_electrovalves), [])
             electrovalve_pins = map(lambda electrovalve: electrovalve['electrovalve_pin'], electrovalves)
 
-            return [name for name, pin in pins.iteritems() if name not in electrovalve_pins + sensor_pins]
+            return [name for name, pin in pins.iteritems() if name not in electrovalve_pins + sensor_pins + [dht_sensor_pin]]
         else:
             return pins

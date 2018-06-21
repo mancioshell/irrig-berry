@@ -4,6 +4,11 @@ import promise from 'es6-promise'
 promise.polyfill()
 import fetch from 'isomorphic-fetch'
 
+import ReadSensorConfiguration from './read-sensor-configuration'
+import ReadRaspberryConfiguration from './read-raspberry-configuration'
+import UpdateSensorConfiguration from './update-sensor-configuration'
+import UpdateRaspberryConfiguration from './update-raspberry-configuration'
+
 class Configuration extends React.Component {
 
   constructor(props) {
@@ -18,69 +23,20 @@ class Configuration extends React.Component {
         type: "",
         pin: ""
       },
-      pins: []
+      pins: [],
+      reader: {
+        readerRaspberry: true,
+        readerSensor: true
+      }
     };
 
-    this.handleRaspberryModel = this.handleRaspberryModel.bind(this);
-    this.handleSensorModel = this.handleSensorModel.bind(this);
-    this.handlePins = this.handlePins.bind(this);
-    this.updateRaspberryConfiguration = this.updateRaspberryConfiguration.bind(this);
-    this.updateSensorConfiguration = this.updateSensorConfiguration.bind(this);
-  }
+    this.saveConfiguration = this.saveConfiguration.bind(this);
+    this.updateConfiguration = this.updateConfiguration.bind(this);
 
-  handleRaspberryModel(event) {
-    let value = event.target.value;
-    let raspberry = Object.assign({}, this.state.raspberry);
-    raspberry.model = value
-    this.setState({raspberry: raspberry});
-  }
+    this.onChangeRaspberryConfiguration = this.onChangeRaspberryConfiguration.bind(this)
+    this.onChangeSensorTypeConfiguration = this.onChangeSensorTypeConfiguration.bind(this)
+    this.onChangeSensorPinConfiguration = this.onChangeSensorPinConfiguration.bind(this)
 
-  handleSensorModel(event) {
-    let value = event.target.value;
-    let sensor = Object.assign({}, this.state.sensor);
-    sensor.type = value
-    this.setState({sensor: sensor});
-  }
-
-  handlePins(event) {
-    let value = event.target.value;
-    let sensor = Object.assign({}, this.state.sensor);
-    sensor.pin = value
-    this.setState({sensor: sensor});
-  }
-
-  updateRaspberryConfiguration() {
-    fetch('/api/raspberry', {
-      credentials: 'same-origin',
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(this.state.raspberry)
-    }).then(response => {
-      if (response.ok) {
-        return response.json()
-      } else {
-        throw response.json()
-      }
-    }).then(response => {})
-  }
-
-  updateSensorConfiguration() {
-    fetch('/api/sensors', {
-      credentials: 'same-origin',
-      method: 'PUT',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(this.state.sensor)
-    }).then(response => {
-      if (response.ok) {
-        return response.json()
-      } else {
-        throw response.json()
-      }
-    }).then(response => {})
   }
 
   componentDidMount() {
@@ -98,25 +54,7 @@ class Configuration extends React.Component {
         throw response.json()
       }
     }).then(raspberry => {
-      console.log(raspberry);
       this.setState({raspberry: raspberry});
-    })
-
-    fetch('/api/sensors', {
-      credentials: 'same-origin',
-      method: 'GET',
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(response => {
-      if (response.ok) {
-        return response.json()
-      } else {
-        throw response.json()
-      }
-    }).then(sensor => {
-      console.log(sensor);
-      this.setState({sensor: sensor});
     })
 
     fetch('/api/pins', {
@@ -132,67 +70,94 @@ class Configuration extends React.Component {
         throw response.json()
       }
     }).then(pins => {
-      console.log(pins);
       this.setState({pins: pins});
+
+      fetch('/api/sensors', {
+        credentials: 'same-origin',
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }).then(response => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          throw response.json()
+        }
+      }).then(sensor => {
+        this.setState({sensor: sensor});
+        let pins = this.state.pins.concat(sensor.pin);
+        this.setState({pins: pins});
+      })
+      
     });
+  }
+
+  onChangeRaspberryConfiguration(event) {
+    let value = event.target.value;
+    let raspberry = Object.assign({}, this.state.raspberry);
+    raspberry.model = value
+    this.setState({raspberry: raspberry});
+  }
+
+  onChangeSensorTypeConfiguration(event) {
+    let value = event.target.value;
+    let sensor = Object.assign({}, this.state.sensor);
+    sensor.type = value
+    this.setState({sensor: sensor});
+  }
+
+  onChangeSensorPinConfiguration(event) {
+    let value = event.target.value;
+    let sensor = Object.assign({}, this.state.sensor);
+    sensor.pin = value
+    this.setState({sensor: sensor});
+  }
+
+  saveConfiguration(type) {
+    let state = this.state.reader[type] = true
+    this.setState({reader: this.state.reader});
+  }
+
+  updateConfiguration(type) {
+    this.state.reader[type] = false
+    this.setState({reader: this.state.reader});
   }
 
   render() {
 
     return (<div className="row">
       <div className="col-md-6 offset-md-3">
+        {
+          !this.state.reader.readerRaspberry
+            ? <UpdateRaspberryConfiguration
+            onSave={this.saveConfiguration}
+            onChange={this.onChangeRaspberryConfiguration}
+            raspberry={this.state.raspberry}>
+          </UpdateRaspberryConfiguration>
+            : <ReadRaspberryConfiguration
+            onUpdate={this.updateConfiguration}
+            raspberry={this.state.raspberry}>
+          </ReadRaspberryConfiguration>
+        }
 
-        <form className="form-inline">
-
-          <div className="form-group">
-            <label htmlFor="humidity_temperatureId">Pin Sensore Temperatura / Umidit&agrave;</label>
-            <select className="form-control" id="humidity_temperatureId" onChange={this.handlePins} value={this.state.sensor.pin}>
-              {
-                (() => {
-                  return this.state.pins.map((pin, index) => {
-                    return (<option key={index} value={pin}>{pin}</option>)
-                  });
-                })()
-              }
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="sensor_typeId">Tipologia Sensore</label>
-            <select className="form-control" id="sensor_typeId" onChange={this.handleSensorModel} value={this.state.sensor.type}>
-              {
-                (() => {
-                  return this.state.sensor.types.map((type, index) => {
-                    return (<option key={index} value={type}>{type}</option>)
-                  });
-                })()
-              }
-            </select>
-          </div>
-
-          <button type="submit" className="btn btn-primary" onClick={this.updateSensorConfiguration}>Salva</button>
-        </form>
-
-        <form className="form-inline">
-          <div className="form-group">
-            <label htmlFor="raspberryPiId">Tipologia Raspberry</label>
-            <select className="form-control" id="raspberryPiId" onChange={this.handleRaspberryModel} value={this.state.raspberry.model}>
-              {
-                (() => {
-                  return this.state.raspberry.models.map((model, index) => {
-                    return (<option key={model.id} value={model.id}>{model.name}</option>)
-                  });
-                })()
-              }
-            </select>
-          </div>
-
-          <button type="submit" className="btn btn-primary" onClick={this.updateRaspberryConfiguration}>Salva</button>
-        </form>
+        {
+          !this.state.reader.readerSensor
+            ? <UpdateSensorConfiguration
+            onSave={this.saveConfiguration}
+            onChangeType={this.onChangeSensorTypeConfiguration}
+            onChangePin={this.onChangeSensorPinConfiguration}
+            sensor={this.state.sensor}
+            pins={this.state.pins}>
+          </UpdateSensorConfiguration>
+            : <ReadSensorConfiguration
+            onUpdate={this.updateConfiguration}
+            sensor={this.state.sensor}>
+          </ReadSensorConfiguration>
+        }
 
       </div>
     </div>);
-
   }
 
 }

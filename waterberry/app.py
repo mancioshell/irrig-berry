@@ -62,11 +62,11 @@ socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor)
 api = Api(app)
 
 api.add_resource(Electrovalve, '/api/electrovalves/<string:electrovalve_id>',
-    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory})
+    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
 api.add_resource(ElectrovalveList, '/api/electrovalves',
-    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory})
+    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
 
-api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'gpio_dao': gpio_dao, 'electrovalve_dao': electrovalve_dao})
+api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'gpio_dao': gpio_dao, 'electrovalve_dao': electrovalve_dao})
 
 api.add_resource(Sensor, '/api/sensors', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'gpio_dao': gpio_dao, 'electrovalve_dao': electrovalve_dao})
 

@@ -15,7 +15,7 @@ import faPencilAlt from '@fortawesome/fontawesome-free-solid/faPencilAlt'
 import faClock from '@fortawesome/fontawesome-free-solid/faClock'
 import faMagic from '@fortawesome/fontawesome-free-solid/faMagic'
 
-import {subscribeToElectrovalveData} from './socket';
+import {subscribeToElectrovalveData, unSubscribeToElectrovalveData} from './socket';
 
 class ReadElectrovalve extends React.Component {
 
@@ -52,7 +52,7 @@ class ReadElectrovalve extends React.Component {
     })
   }
 
-  componentDidMount() {
+  componentDidMount() {  
     subscribeToElectrovalveData((err, data) => {
       for (let value of data) {
         if (value._id == this.state.electrovalve._id) {
@@ -66,6 +66,10 @@ class ReadElectrovalve extends React.Component {
         }
       }
     });
+  }
+
+  componentWillUnmount(){
+    unSubscribeToElectrovalveData();
   }
 
   componentDidCatch(error, info) {}
