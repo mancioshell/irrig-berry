@@ -11,7 +11,7 @@ config.read(file)
 raspberry = config.getboolean(os.environ['PLATFORM'], 'RPI_GPIO')
 
 if raspberry:
-    import Adafruit_CharLCD as LCD
+    import Adafruit_CharLCD as LCDRaspberry
 
 # Define LCD column and row size for 16x2 LCD.
 lcd_columns = 16
@@ -20,7 +20,7 @@ lcd_rows    = 2
 class LCD:
     def __init__(self):
         if raspberry:
-            self.lcd = LCD.Adafruit_CharLCDBackpack()
+            self.lcd = LCDRaspberry.Adafruit_CharLCDBackpack()
 
     def writeData(self, humidity, temperature):
         if raspberry:
