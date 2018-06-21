@@ -6,9 +6,11 @@ from waterberry.utils.logger import logger
 from waterberry.db.electrovalve_dao import ElectrovalveDAO
 from waterberry.db.gpio_dao import GPIODAO
 from waterberry.db.dht_sensor_dao import DHTSensorDAO
+from waterberry.utils.definition import ROOT_DIR
 
+file = os.path.join(ROOT_DIR, 'config/waterberry.config')
 config = configparser.ConfigParser()
-config.read('/media/sf_Projects/waterberry/waterberry/config/waterberry.config')
+config.read(file)
 
 database = PyMongo()
 

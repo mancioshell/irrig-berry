@@ -139,7 +139,7 @@ class Electrovalve extends React.Component {
       <div className="card-header text-black bg-light">
         {this.state.electrovalve.name}
       </div>
-      <img className="card-img-top img-card" src="img/gerani2.jpg" alt="Card image cap"/>
+      <img className="card-img-top img-card" src="img/gerani.jpg" alt="Card image cap"/>
       <div className="card-body">
         <form>
 

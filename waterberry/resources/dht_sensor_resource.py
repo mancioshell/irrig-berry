@@ -20,10 +20,12 @@ class Sensor(Resource):
         if errors:
            return make_response(jsonify({'message': errors}), 400)
 
-        electrovalves = self.electrovalve_dao.getElectrovalveList()
-        available_pins = self.gpio_dao.getAvailablePinList(electrovalves)
+        dht_sensor_pin = self.dht_sensor_dao.getSensor()['pin']
 
-        if dht_sensor['pin'] not in available_pins:
+        electrovalves = self.electrovalve_dao.getElectrovalveList()
+        available_pins = self.gpio_dao.getAvailablePinList(electrovalves, dht_sensor_pin)
+
+        if dht_sensor['pin'] != dht_sensor_pin and dht_sensor['pin'] not in available_pins:
             logger.error('dht sensor pin already in use ...')
             message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(dht_sensor['pin'])
             return make_response(jsonify({'message': message}), 403)

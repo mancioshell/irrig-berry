@@ -3,8 +3,11 @@ import os
 
 from waterberry.utils.logger import logger
 
+from waterberry.utils.definition import ROOT_DIR
+
+file = os.path.join(ROOT_DIR, 'config/waterberry.config')
 config = configparser.ConfigParser()
-config.read('/media/sf_Projects/waterberry/waterberry/config/waterberry.config')
+config.read(file)
 raspberry = config.getboolean(os.environ['PLATFORM'], 'RPI_GPIO')
 
 if raspberry:

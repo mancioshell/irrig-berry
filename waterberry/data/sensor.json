@@ -1,0 +1,5 @@
+{
+  "type": "DHT11",
+  "types": ["DHT11", "DHT22", "AM2302"],
+  "pin": "GPIO_6"
+}

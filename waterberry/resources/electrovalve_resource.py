@@ -12,10 +12,12 @@ class ElectrovalveResource(Resource):
         self.electrovalve_dao = kwargs['electrovalve_dao']
         self.gpio_dao = kwargs['gpio_dao']
         self.job_factory = kwargs['job_factory']
+        self.dht_sensor_dao = kwargs['dht_sensor_dao']
 
     def validatePin(self, electrovalve, data=None):
+        dht_sensor_pin = self.dht_sensor_dao.getSensor()['pin']
         electrovalves = self.electrovalve_dao.getElectrovalveList()
-        available_pins = self.gpio_dao.getAvailablePinList(electrovalves)
+        available_pins = self.gpio_dao.getAvailablePinList(electrovalves, dht_sensor_pin)
 
         current_electovalve_pin = None
         current_pin_di = None

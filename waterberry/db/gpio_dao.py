@@ -1,39 +1,46 @@
 from bson.objectid import ObjectId
 from waterberry.utils.logger import logger
-
-DEFAULT_PINS = {
-    'GPIO_0': 17, 'GPIO_1': 18, 'GPIO_2': 21, 'GPIO_3': 22,
-    'GPIO_4': 23, 'GPIO_5': 24,'GPIO_6': 25, 'GPIO_7': 4
-}
+import os
+import json
+from waterberry.utils.definition import ROOT_DIR
 
 class GPIODAO:
     def __init__(self, database):
         self.database = database
 
-    def initGPIO(self, pins=DEFAULT_PINS):
+    def initGPIO(self):
         with self.database.app.app_context():
             result = self.database.db.gpio.find_one({})
             if result is None:
-                result = self.database.db.gpio.insert_one({'pins': pins})
+                file = os.path.join(ROOT_DIR, 'data/raspberry.json')
+                with open(file) as f:
+                    data = json.load(f)
+                result = self.database.db.gpio.insert_one(data)
                 self.id = str(result.inserted_id)
             else:
                 self.id = str(result['_id'])
 
+    def getRaspberryModelList(self):
+        raspberry = self.database.db.gpio.find_one({'_id': ObjectId(self.id)})
+        return raspberry
+
+    def setRaspberryPiModel(self, model):
+        return self.database.db.gpio.update_one({'_id': ObjectId(self.id)}, {"$set":  {"model": model}})
+
     def getPinList(self):
-        pins = self.database.db.gpio.find_one({'_id': ObjectId(self.id)})
-        pin_list = [name for name, pin in pins['pins'].iteritems()]
+        raspberry = self.database.db.gpio.find_one({'_id': ObjectId(self.id)})
+        pins = filter(lambda model: model['id'] == raspberry['model'], raspberry['models'])[0]['gpio']
+        pin_list = [name for name, pin in pins.iteritems()]
         return pin_list
 
     def getPinByName(self, name):
-        pins = self.database.db.gpio.find_one({'_id': ObjectId(self.id)})
-        logger.info('pins')
-        logger.info(pins)
-        logger.info('name')
-        logger.info(name)
-        return pins['pins'][name]
+        raspberry = self.database.db.gpio.find_one({'_id': ObjectId(self.id)})
+        pins = filter(lambda model: model['id'] == raspberry['model'], raspberry['models'])[0]['gpio']
+        return pins[name]
 
-    def getAvailablePinList(self, electrovalves):
-        pins = self.database.db.gpio.find_one({'_id': ObjectId(self.id)})
+    def getAvailablePinList(self, electrovalves, dht_sensor_pin):
+        raspberry = self.database.db.gpio.find_one({'_id': ObjectId(self.id)})
+        pins = filter(lambda model: model['id'] == raspberry['model'], raspberry['models'])[0]['gpio']
 
         filter_automatic_electrovalve = lambda electrovalve: electrovalve['mode'] == 'automatic'
         map_automatic_pin = lambda electrovalve: [electrovalve['pin_di'],
@@ -47,6 +54,6 @@ class GPIODAO:
             sensor_pins = reduce(reduce_pin_list, map(map_automatic_pin, automatic_electrovalves), [])
             electrovalve_pins = map(lambda electrovalve: electrovalve['electrovalve_pin'], electrovalves)
 
-            return [name for name, pin in pins['pins'].iteritems() if name not in electrovalve_pins + sensor_pins]
+            return [name for name, pin in pins.iteritems() if name not in electrovalve_pins + sensor_pins + [dht_sensor_pin]]
         else:
-            return pins['pins']
+            return pins
