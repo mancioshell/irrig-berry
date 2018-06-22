@@ -36,7 +36,7 @@ class DHTSensor:
         pin = self.gpio_dao.getPinByName(sensor_data['pin'])
 
         if self.raspberry :
-            humidity, temperature = Adafruit_DHT.read_retry(SENSOR_TYPE_LIST[sensor_type], pin)
+            humidity, temperature = Adafruit_DHT.read(SENSOR_TYPE_LIST[sensor_type], pin)
         else:
             humidity, temperature = 2, 3
         logger.debug('getSensorData ... humidity : {} - temperature: {}'.format(humidity, temperature))

@@ -14,7 +14,7 @@ class ScheduledJob:
         timetable = electrovalve['timetable']
         next_water_job_id = "{}_next_watering".format(electrovalve_id)
         for count, calendar in enumerate(timetable):
-            job_id = "{}_{}".format(electrovalve_id, count)
+            job_id = "scheduled_{}_{}".format(electrovalve_id, count)
             day_of_week = calendar['day']
             date_time = calendar['time']
 
@@ -23,7 +23,7 @@ class ScheduledJob:
             self.scheduler.add_job(ManualElectrovalveExecutor, 'cron', day_of_week=day_of_week,
                 hour=time.hour, minute=time.minute, args=[electrovalve_id], id=job_id)
 
-        self.scheduler.add_job(NextWaterExecutor, 'interval', minutes=30, args=[electrovalve_id],
+        self.scheduler.add_job(NextWaterExecutor, 'interval', minutes=1, args=[electrovalve_id],
             id=next_water_job_id)
 
 
@@ -33,7 +33,7 @@ class ScheduledJob:
         self.board.cleanupPin(electrovalve['electrovalve_pin'])
 
         for count, calendar in enumerate(timetable):
-            job_id = "{}_{}".format(electrovalve_id, count)
+            job_id = "scheduled_{}_{}".format(electrovalve_id, count)
             try:
                 self.scheduler.remove_job(job_id)
             except JobLookupError:
