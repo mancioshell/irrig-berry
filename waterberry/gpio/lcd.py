@@ -9,6 +9,7 @@ file = os.path.join(ROOT_DIR, 'config/waterberry.config')
 config = configparser.ConfigParser()
 config.read(file)
 raspberry = config.getboolean(os.environ['PLATFORM'], 'RPI_GPIO')
+lcd = config.getboolean(os.environ['PLATFORM'], 'LCD')
 
 if raspberry:
     import Adafruit_CharLCD as LCD
@@ -19,13 +20,13 @@ lcd_rows    = 2
 
 class LCD:
     def __init__(self):
-        if raspberry:
+        if raspberry and lcd:
             self.lcd = LCD.Adafruit_CharLCDBackpack()
 
     def writeData(self, humidity, temperature):
-        if raspberry:
+        if raspberry and lcd:
             self.lcd.set_backlight(0)
-            lcd.clear()
-            lcd.message("{}u'\u2103'\n{}%".format(temperature, humidity))
+            self.lcd.clear()
+            self.lcd.message("{}u'\u2103'\n{}%".format(temperature, humidity))
         else:
             print "Writing {}u'\u2103'\n{}%".format(temperature, humidity)
