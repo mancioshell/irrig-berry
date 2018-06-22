@@ -18,6 +18,9 @@ sudo apt-get install python-dev
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 sudo python get-pip.py
 sudo pip install pipenv
+wget https://github.com/adafruit/Adafruit_Python_DHT/archive/master.zip
+unzip master.zip
+pipenv install -e Adafruit_Python_DHT-master
 
 # INSTALL NODEJS ENV:
 apt-get update

@@ -15,7 +15,7 @@ import faPencilAlt from '@fortawesome/fontawesome-free-solid/faPencilAlt'
 import faClock from '@fortawesome/fontawesome-free-solid/faClock'
 import faMagic from '@fortawesome/fontawesome-free-solid/faMagic'
 
-import {subscribeToElectrovalveData} from './socket';
+import {subscribeToElectrovalveData, unSubscribeToElectrovalveData} from './socket';
 
 class ReadElectrovalve extends React.Component {
 
@@ -52,7 +52,7 @@ class ReadElectrovalve extends React.Component {
     })
   }
 
-  componentDidMount() {
+  componentDidMount() {  
     subscribeToElectrovalveData((err, data) => {
       for (let value of data) {
         if (value._id == this.state.electrovalve._id) {
@@ -66,6 +66,10 @@ class ReadElectrovalve extends React.Component {
         }
       }
     });
+  }
+
+  componentWillUnmount(){
+    unSubscribeToElectrovalveData();
   }
 
   componentDidCatch(error, info) {}
@@ -108,7 +112,7 @@ class ReadElectrovalve extends React.Component {
           &nbsp;Elimina
         </button>
       </div>
-      <img className="card-img-top img-card" src="img/gerani2.jpg" alt="Card image cap"/>
+      <img className="card-img-top img-card" src="img/gerani.jpg" alt="Card image cap"/>
       <div className="card-body">
         <form>
           <div className="form-row">
@@ -132,9 +136,36 @@ class ReadElectrovalve extends React.Component {
               if (this.state.electrovalve.mode == 'automatic') {
                 return (<div className="form-row">
                   <div className="col-md-6 mb-3">
-                    <label htmlFor="sensorId">Pin sensore</label>
+                    <label htmlFor="pin_diId">Pin DI</label>
                     <p>
-                      <b>{this.state.electrovalve.sensor_pin}</b>
+                      <b>{this.state.electrovalve.pin_di}</b>
+                    </p>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="pin_doId">Pin DO</label>
+                    <p>
+                      <b>{this.state.electrovalve.pin_do}</b>
+                    </p>
+                  </div>
+                </div>)
+              }
+            })()
+          }
+
+          {
+            (() => {
+              if (this.state.electrovalve.mode == 'automatic') {
+                return (<div className="form-row">
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="pin_clkId">Pin Clock</label>
+                    <p>
+                      <b>{this.state.electrovalve.pin_clk}</b>
+                    </p>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <label htmlFor="pin_csId">Pin CS</label>
+                    <p>
+                      <b>{this.state.electrovalve.pin_cs}</b>
                     </p>
                   </div>
                 </div>)

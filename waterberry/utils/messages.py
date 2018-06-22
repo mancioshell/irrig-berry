@@ -1,5 +1,6 @@
 ELECTROVALVE_NOT_FOUND = "Electrovalve with id {} not found"
 ELECTROVALVE_PIN_ALREADY_IN_USE = "Electrovalve pin {} is already used"
 SENSOR_PIN_ALREADY_IN_USE = "Sensor pin {} is already used"
+DUPLICATE_PINS = "There are some duplicate pin in {}"
 ELECTROVALVE_MODE_NOT_MANUAL = "Electrovalve mode is not manual"
 ELECTROVALVE_IS_WATERING = "Cannot update electrovalve while it is watering"

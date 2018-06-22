@@ -5,16 +5,17 @@ from waterberry.db.dao_factory import database, DaoFactory
 from waterberry.gpio.board import Board
 from waterberry.utils.logger import logger
 
-def ManualElectrovalve(electrovalve_id):
+def ManualElectrovalveExecutor(electrovalve_id):
     with database.app.app_context():
         electrovalve_dao = DaoFactory().createElectrovalveDAO()
         gpio_dao = DaoFactory().createGPIODAO()
-        board = Board()
+        gpio_dao.initGPIO()
+        board = Board(gpio_dao)
 
         electrovalve = electrovalve_dao.getElectrovalveById(electrovalve_id)
-        electrovalve_pin = gpio_dao.getPinByName(electrovalve['electrovalve_pin'])
+        electrovalve_pin = electrovalve['electrovalve_pin']
 
-        logger.info('ManualElectrovalve job started ...')
+        logger.info('ManualElectrovalveExecutor job started ...')
         logger.info('Water electrovalve with id {} at pin {}'.format(electrovalve_id, electrovalve_pin))
 
         electrovalve['watering'] = True

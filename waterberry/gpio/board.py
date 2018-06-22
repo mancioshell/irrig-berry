@@ -1,49 +1,57 @@
-#import RPi.GPIO as GPIO
-#import Adafruit_DHT
+import configparser
+import os
 
 from waterberry.utils.logger import logger
+from waterberry.utils.definition import ROOT_DIR
 
-#SENSOR_TYPE = Adafruit_DHT.DHT11
-SENSOR_TYPE = 11
-TEMP_HUMIDITY_PIN = 22
+file = os.path.join(ROOT_DIR, 'config/waterberry.config')
+config = configparser.ConfigParser()
+config.read(file)
+raspberry = config.getboolean(os.environ['PLATFORM'], 'RPI_GPIO')
+
+if raspberry:
+    import RPi.GPIO as GPIO
 
 class Board:
-    def __init__(self):
-        pass
+    def __init__(self, gpio_dao):
+        self.raspberry = raspberry
+        self.gpio_dao = gpio_dao
 
     def initBoard(self):
         logger.debug('int bread board ...')
-        #GPIO.setwarnings(False)
-        #GPIO.setmode(GPIO.BOARD)
-
-    def getSensorData(self):
-        #humidity, temperature = Adafruit_DHT.read_retry(SENSOR_TYPE, TEMP_HUMIDITY_PIN)
-        humidity, temperature = 2, 3
-        logger.debug('getSensorData ... humidity : {} - temperature: {}'.format(humidity, temperature))
-        return humidity, temperature
+        if self.raspberry : GPIO.setwarnings(False)
+        if self.raspberry : GPIO.setmode(GPIO.BCM)
 
     def setupOutputPin(self, pin):
+        pin = self.gpio_dao.getPinByName(pin)
         logger.debug('setupOutputPin ... {}'.format(pin))
-        #GPIO.setup(pin, GPIO.OUT)
+        if self.raspberry : GPIO.setup(pin, GPIO.OUT)
 
     def setupInputPin(self, pin):
+        pin = self.gpio_dao.getPinByName(pin)
         logger.info('setupInputPin ... {}'.format(pin))
-        #GPIO.setup(pin, GPIO.IN)
+        if self.raspberry : GPIO.setup(pin, GPIO.IN)
 
     def enablePin(self, pin):
+        pin = self.gpio_dao.getPinByName(pin)
         logger.info('enablePin ... {}'.format(pin))
-        #GPIO.output(pin, GPIO.LOW) # Pin on
+        if self.raspberry : GPIO.output(pin, GPIO.LOW) # Pin on
 
     def disablePin(self, pin):
+        pin = self.gpio_dao.getPinByName(pin)
         logger.info('disablePin ... {}'.format(pin))
-        #GPIO.output(pin, GPIO.HIGH) # Pin on
+        if self.raspberry : GPIO.output(pin, GPIO.HIGH) # Pin on
 
     def getPinState(self, pin):
-        #state = GPIO.input(pin)
-        state = 2
+        pin = self.gpio_dao.getPinByName(pin)
+        if self.raspberry :
+            state = GPIO.input(pin)
+        else :
+            state = 2
         logger.info('getPinState ... {}'.format(state))
         return state
 
     def cleanupPin(self, pin):
+        pin = self.gpio_dao.getPinByName(pin)
         logger.info('cleanupPin ... {}'.format(pin))
-        #GPIO.cleanup(pin)
+        if self.raspberry : GPIO.cleanup(pin)

@@ -1,0 +1,81 @@
+{
+  "model": "P1_MOD_B_REV2",
+  "models": [{
+      "name": "Raspberry PI Mod B REV 1",
+      "id": "P1_MOD_B_REV1",
+      "gpio": {
+        "GPIO_0": 17,
+        "GPIO_1": 18,
+        "GPIO_2": 21,
+        "GPIO_3": 22,
+        "GPIO_4": 23,
+        "GPIO_5": 24,
+        "GPIO_6": 25,
+        "GPIO_7": 4
+      }
+    },
+
+    {
+      "name": "Raspberry PI Mod B REV 2",
+      "id": "P1_MOD_B_REV2",
+      "gpio": {
+        "GPIO_0": 17,
+        "GPIO_1": 18,
+        "GPIO_2": 27,
+        "GPIO_3": 22,
+        "GPIO_4": 23,
+        "GPIO_5": 24,
+        "GPIO_6": 25,
+        "GPIO_7": 4
+      }
+    },
+
+    {
+      "name": "Raspberry PI Mod B+",
+      "id": "P1_MOD_B+",
+      "gpio": {
+        "GPIO_0": 17,
+        "GPIO_1": 18,
+        "GPIO_2": 21,
+        "GPIO_3": 22,
+        "GPIO_4": 23,
+        "GPIO_5": 24,
+        "GPIO_6": 25,
+        "GPIO_7": 4,
+        "GPIO_21": 5,
+        "GPIO_22": 6,
+        "GPIO_23": 13,
+        "GPIO_24": 19,
+        "GPIO_25": 26,
+        "GPIO_26": 12,
+        "GPIO_27": 16,
+        "GPIO_28": 20,
+        "GPIO_29": 21
+      }
+    },
+
+    {
+      "name": "Raspberry PI 2 Mod B",
+      "id": "P2_MOD_B",
+      "gpio": {
+        "GPIO_0": 17,
+        "GPIO_1": 18,
+        "GPIO_2": 21,
+        "GPIO_3": 22,
+        "GPIO_4": 23,
+        "GPIO_5": 24,
+        "GPIO_6": 25,
+        "GPIO_7": 4,
+        "GPIO_21": 5,
+        "GPIO_22": 6,
+        "GPIO_23": 13,
+        "GPIO_24": 19,
+        "GPIO_25": 26,
+        "GPIO_26": 12,
+        "GPIO_27": 16,
+        "GPIO_28": 20,
+        "GPIO_29": 21
+      }
+    }
+  ]
+}

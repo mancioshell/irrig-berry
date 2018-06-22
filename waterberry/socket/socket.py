@@ -9,17 +9,18 @@ thread_lock = Lock()
 
 class ElectrovalveSocket(Namespace):
 
-    def __init__(self, socketio, electrovalve_dao, board):
+    def __init__(self, socketio, electrovalve_dao, dht_sensor):
         self.socketio = socketio
         self.electrovalve_dao = electrovalve_dao
-        self.board = board
+        self.dht_sensor = dht_sensor
         super(ElectrovalveSocket, self).__init__()
 
     def __extractData(self, electrovalve):
-        self.board.initBoard()
-        air_humidity, air_temperature = self.board.getSensorData()
+        air_humidity, air_temperature = self.dht_sensor.getData()
+        logger.info("air_humidity {} - air_temperature {}".format(air_humidity, air_temperature))
         current_humidity = electrovalve['current_humidity'] if 'current_humidity' in electrovalve else None
         last_water = str(electrovalve['last_water']) if 'last_water' in electrovalve else None
+        next_water = str(electrovalve['next_water']) if 'next_water' in electrovalve else None
 
         return {
             '_id': str(electrovalve['_id']),
@@ -27,7 +28,8 @@ class ElectrovalveSocket(Namespace):
             'air_temperature': air_temperature,
             'air_humidity': air_humidity,
             'watering': electrovalve['watering'],
-            'last_water': last_water
+            'last_water': last_water,
+            'next_water': next_water
             }
 
     def __backgroundTask(self):
@@ -37,7 +39,7 @@ class ElectrovalveSocket(Namespace):
                 data = map(self.__extractData, electrovalves)
                 self.socketio.emit('data', data, json=True)
 
-            self.socketio.sleep(3)
+            self.socketio.sleep(5)
 
     def on_connect(self):
         global thread

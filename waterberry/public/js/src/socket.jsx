@@ -1,14 +1,20 @@
 import io from 'socket.io-client';
-const socket = io();
 
-socket.on('connect', () => {
-  console.log("connect ...");
-});
+let socket = null;
 
 const subscribeToElectrovalveData = cb => {
+  socket = io();
+  socket.on('connect', () => {
+    console.log("connect ...");
+  });
   socket.on('data', data => cb(null, data));
 }
 
+const unSubscribeToElectrovalveData = () => {
+  socket.disconnect()
+}
+
 export {
-  subscribeToElectrovalveData
+  subscribeToElectrovalveData,
+  unSubscribeToElectrovalveData
 };

@@ -12,14 +12,12 @@ class AddElectrovalve extends React.Component {
   }
 
   render() {
-    return (<div className="card fig-container">
-      <div className="card-header text-black bg-light">Nuova Elettrovalvola</div>
-      <img className="card-img-top fig-card" src="img/electrovalve.jpg" alt="Card image cap"/>
+    return (<div className="card fig-container card-dashed text-center">
       <div className="fig-overlay">
-        <a href="#" className="btn btn-primary" onClick={this.new}>
+        <button className="btn btn-primary" onClick={this.new}>
           <i className="fas fa-plus"></i>
           &nbsp;Aggiungi
-        </a>
+        </button>
       </div>
     </div>);
   }
