@@ -53,7 +53,7 @@ class ElectrovalveList extends React.Component {
       duration: 1
     }
     const electrovalveList = this.state.electrovalves.map((electrovalve) => {
-      return (<div key={electrovalve._id} className="col-sm-4">
+      return (<div key={electrovalve._id} className="col-12 col-md-6 col-lg-4">
         <ElectrovalveViewer viewer="read" removeElectrovalve={this.removeElectrovalve} addElectrovalve={this.addElectrovalve} electrovalve={electrovalve}></ElectrovalveViewer>
       </div>)
     });
@@ -61,7 +61,7 @@ class ElectrovalveList extends React.Component {
     return (
       <div className="row">
         {electrovalveList}
-        <div className="col-sm-4">
+        <div className="col-12 col-md-6 col-lg-4">
           <ElectrovalveViewer viewer="new" addElectrovalve={this.addElectrovalve} electrovalve={newElectrovalve}></ElectrovalveViewer>
         </div>
       </div>
