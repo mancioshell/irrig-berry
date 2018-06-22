@@ -125,14 +125,14 @@ class ReadElectrovalve extends React.Component {
           <div className="card-body">
             <form>
               <div className="row">
-                <div className="col-md-6 mb-3">
+                <div className="col-6 col-md-6 mb-3">
                   <label htmlFor="electroValveId">Pin Elettrovalvola</label>
                   <p>
                     <b>{this.state.electrovalve.electrovalve_pin}</b>
                   </p>
                 </div>
 
-                <div className="col-md-6 mb-3">
+                <div className="col-6 col-md-6 mb-3">
                   <label htmlFor="durationId">Tempo di irrigazione</label>
                   <p>
                     <b>{this.state.electrovalve.duration}&nbsp;secondi</b>
@@ -144,13 +144,13 @@ class ReadElectrovalve extends React.Component {
                 (() => {
                   if (this.state.electrovalve.mode == 'automatic') {
                     return (<div className="row">
-                      <div className="col-md-6 mb-3">
+                      <div className="col-6 col-md-6 mb-3">
                         <label htmlFor="pin_diId">Pin DI</label>
                         <p>
                           <b>{this.state.electrovalve.pin_di}</b>
                         </p>
                       </div>
-                      <div className="col-md-6 mb-3">
+                      <div className="col-6 col-md-6 mb-3">
                         <label htmlFor="pin_doId">Pin DO</label>
                         <p>
                           <b>{this.state.electrovalve.pin_do}</b>
@@ -165,13 +165,13 @@ class ReadElectrovalve extends React.Component {
                 (() => {
                   if (this.state.electrovalve.mode == 'automatic') {
                     return (<div className="row">
-                      <div className="col-md-6 mb-3">
+                      <div className="col-6 col-md-6 mb-3">
                         <label htmlFor="pin_clkId">Pin Clock</label>
                         <p>
                           <b>{this.state.electrovalve.pin_clk}</b>
                         </p>
                       </div>
-                      <div className="col-md-6 mb-3">
+                      <div className="col-6 col-md-6 mb-3">
                         <label htmlFor="pin_csId">Pin CS</label>
                         <p>
                           <b>{this.state.electrovalve.pin_cs}</b>
@@ -193,7 +193,7 @@ class ReadElectrovalve extends React.Component {
                       </tr>)
                     })
                     return (<div className="row">
-                      <div className="col-md-12 mb-3">
+                      <div className="col-12 col-md-12 mb-3">
 
                         <p>Irrigazioni Schedulate: </p>
 
@@ -216,7 +216,7 @@ class ReadElectrovalve extends React.Component {
               }
 
               <div className="row">
-                <div className="col-md-6 mb-3">
+                <div className="col-6 col-md-6 mb-3">
                   <label htmlFor="humidityId">Umidità Aria
                   </label>
                   <p>
@@ -230,7 +230,7 @@ class ReadElectrovalve extends React.Component {
                   </p>
                 </div>
 
-                <div className="col-md-6 mb-3">
+                <div className="col-6 col-md-6 mb-3">
                   <label htmlFor="lastWaterId">Temperatura Aria
                   </label>
                   <p>
@@ -249,7 +249,7 @@ class ReadElectrovalve extends React.Component {
                 (() => {
                   if (this.state.electrovalve.mode == 'automatic') {
                     return (<div className="row">
-                      <div className="col-md-6 mb-3">
+                      <div className="col-6 col-md-6 mb-3">
                         <label htmlFor="soilHumidityId">Umidità Terra</label>
                         {
                           this.state.electrovalve.current_humidity
@@ -265,7 +265,7 @@ class ReadElectrovalve extends React.Component {
                               </p>
                         }
                       </div>
-                      <div className="col-md-6 mb-3">
+                      <div className="col-6 col-md-6 mb-3">
                         <label htmlFor="tresholdId">Soglia Umidità</label>
                         <div className="progress">
                           <div className="progress-bar" id="tresholdId" role="progressbar" style={{
@@ -279,7 +279,7 @@ class ReadElectrovalve extends React.Component {
               }
 
               <div className="row">
-                <div className="col-md-6 mb-3">
+                <div className="col-6 col-md-6 mb-3">
                   <p>Modalità:
                   </p>
                   {
@@ -318,7 +318,7 @@ class ReadElectrovalve extends React.Component {
                   }
 
                 </div>
-                <div className="col-md-6 mb-3">
+                <div className="col-6 col-md-6 mb-3">
                   <label htmlFor="lastWaterId">Ultima irrigazione:</label>
                   <p>
                     {
@@ -332,7 +332,7 @@ class ReadElectrovalve extends React.Component {
               </div>
 
               <div className="row">
-                <div className="col-md-12">
+                <div className="col-12 col-md-12">
                   <label htmlFor="nextWaterId">Prossima irrigazione:</label>
                   <p>
                     {
