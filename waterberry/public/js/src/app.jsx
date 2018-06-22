@@ -31,7 +31,11 @@ class App extends React.Component {
         </Switch>
 
         <footer>
-          <p>© Company 2017</p>
+          <div className="row">
+            <div className="col-md-12 col-12">
+              <p>© Mancioshell 2018</p>
+            </div>
+          </div>          
         </footer>
       </div>
     </div>);

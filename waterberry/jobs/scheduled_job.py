@@ -33,7 +33,7 @@ class ScheduledJob:
         self.board.cleanupPin(electrovalve['electrovalve_pin'])
 
         for count, calendar in enumerate(timetable):
-            job_id = "{}_{}".format(electrovalve_id, count)
+            job_id = "scheduled_{}_{}".format(electrovalve_id, count)
             try:
                 self.scheduler.remove_job(job_id)
             except JobLookupError:

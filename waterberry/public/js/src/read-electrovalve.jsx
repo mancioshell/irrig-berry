@@ -110,10 +110,10 @@ class ReadElectrovalve extends React.Component {
         <div className="card card-container">
           <div className="card-header text-black bg-light">
             <div className="row">
-              <div className="col-sm-8">
-                {this.state.electrovalve.name}
+              <div className="col-9 col-md-7">
+                <p>{this.state.electrovalve.name}</p>
               </div>
-              <div className="col-sm-4">
+              <div className="col-3 col-md-5">
                 <button type="button" className="btn btn-danger btn-sm float-right" onClick={this.delete}>
                   <FontAwesomeIcon icon={faTrashAlt}/>
                   &nbsp;Elimina
@@ -124,7 +124,7 @@ class ReadElectrovalve extends React.Component {
           <img className="card-img-top img-card" src="img/gerani.jpg" alt="Card image cap"/>
           <div className="card-body">
             <form>
-              <div className="form-row">
+              <div className="row">
                 <div className="col-md-6 mb-3">
                   <label htmlFor="electroValveId">Pin Elettrovalvola</label>
                   <p>
@@ -143,7 +143,7 @@ class ReadElectrovalve extends React.Component {
               {
                 (() => {
                   if (this.state.electrovalve.mode == 'automatic') {
-                    return (<div className="form-row">
+                    return (<div className="row">
                       <div className="col-md-6 mb-3">
                         <label htmlFor="pin_diId">Pin DI</label>
                         <p>
@@ -164,7 +164,7 @@ class ReadElectrovalve extends React.Component {
               {
                 (() => {
                   if (this.state.electrovalve.mode == 'automatic') {
-                    return (<div className="form-row">
+                    return (<div className="row">
                       <div className="col-md-6 mb-3">
                         <label htmlFor="pin_clkId">Pin Clock</label>
                         <p>
@@ -192,10 +192,10 @@ class ReadElectrovalve extends React.Component {
                         <td>{timetable.day}</td>
                       </tr>)
                     })
-                    return (<div className="form-row">
-                      <p>Irrigazioni Schedulate:
-                      </p>
+                    return (<div className="row">
                       <div className="col-md-12 mb-3">
+
+                        <p>Irrigazioni Schedulate: </p>
 
                         <table className="table table-striped table-sm">
                           <thead>
@@ -215,7 +215,7 @@ class ReadElectrovalve extends React.Component {
                 })()
               }
 
-              <div className="form-row">
+              <div className="row">
                 <div className="col-md-6 mb-3">
                   <label htmlFor="humidityId">Umidità Aria
                   </label>
@@ -248,7 +248,7 @@ class ReadElectrovalve extends React.Component {
               {
                 (() => {
                   if (this.state.electrovalve.mode == 'automatic') {
-                    return (<div className="form-row">
+                    return (<div className="row">
                       <div className="col-md-6 mb-3">
                         <label htmlFor="soilHumidityId">Umidità Terra</label>
                         {
@@ -278,7 +278,7 @@ class ReadElectrovalve extends React.Component {
                 })()
               }
 
-              <div className="form-row">
+              <div className="row">
                 <div className="col-md-6 mb-3">
                   <p>Modalità:
                   </p>
@@ -331,7 +331,7 @@ class ReadElectrovalve extends React.Component {
                 </div>
               </div>
 
-              <div className="form-row">
+              <div className="row">
                 <div className="col-md-12">
                   <label htmlFor="nextWaterId">Prossima irrigazione:</label>
                   <p>
@@ -346,14 +346,14 @@ class ReadElectrovalve extends React.Component {
               </div>
 
               <div className="row">
-                <div className="col-sm-6">
+                <div className="col-md-6 col-6">
                   <button type="button" disabled={this.state.electrovalve.watering} className="btn btn-success" onClick={(e) => this.onRead()}>
                     <FontAwesomeIcon icon={faPencilAlt}/>
                     &nbsp;Modifica
                   </button>
 
-                </div>
-                <div className="col-sm-6">
+                  </div>
+                  <div className="col-md-6 col-6">
 
                   <button type="button" disabled={this.state.electrovalve.watering} className="btn btn-primary" onClick={this.water}>
 
