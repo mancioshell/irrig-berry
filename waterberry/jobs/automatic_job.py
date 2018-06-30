@@ -10,9 +10,9 @@ class AutomaticJob:
 
     def add(self, electrovalve_id, electrovalve=None):
         job_id = "{}_soil".format(electrovalve_id)
-        self.scheduler.add_job(AutomaticElectrovalveExecutor, 'interval', minutes=5,
+        self.scheduler.add_job(AutomaticElectrovalveExecutor, 'interval', minutes=15,
             args=[electrovalve_id], id=electrovalve_id)
-        self.scheduler.add_job(SoilSensorExecutor, 'interval', minutes=1,
+        self.scheduler.add_job(SoilSensorExecutor, 'interval', minutes=5,
             args=[electrovalve_id], id=job_id)
 
     def remove(self, electrovalve_id, electrovalve):

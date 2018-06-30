@@ -23,7 +23,7 @@ class ScheduledJob:
             self.scheduler.add_job(ManualElectrovalveExecutor, 'cron', day_of_week=day_of_week,
                 hour=time.hour, minute=time.minute, args=[electrovalve_id], id=job_id)
 
-        self.scheduler.add_job(NextWaterExecutor, 'interval', minutes=1, args=[electrovalve_id],
+        self.scheduler.add_job(NextWaterExecutor, 'interval', hours=5, args=[electrovalve_id],
             id=next_water_job_id)
 
 
