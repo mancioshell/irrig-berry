@@ -7,7 +7,8 @@ logger = logging.getLogger('waterberry')
 logger.setLevel(logging.INFO)
 
 # create a file handler
-handler = logging.FileHandler(ROOT_DIR+'/logs/waterberry.log')
+handler = logging.TimedRotatingFileHandler(ROOT_DIR+'/logs/waterberry.log',
+    when="d", interval=1, backupCount=7)
 handler.setLevel(logging.INFO)
 
 # create a logging format

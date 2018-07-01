@@ -9,11 +9,13 @@ class AutomaticJob:
         self.board = board
 
     def add(self, electrovalve_id, electrovalve=None):
-        job_id = "{}_soil".format(electrovalve_id)
+        job_id = "{}_automatic".format(electrovalve_id)
+        job_id_soil = "{}_soil".format(electrovalve_id)
+
         self.scheduler.add_job(AutomaticElectrovalveExecutor, 'interval', minutes=15,
-            args=[electrovalve_id], id=electrovalve_id)
-        self.scheduler.add_job(SoilSensorExecutor, 'interval', minutes=5,
             args=[electrovalve_id], id=job_id)
+        self.scheduler.add_job(SoilSensorExecutor, 'interval', minutes=5,
+            args=[electrovalve_id], id=job_id_soil)
 
     def remove(self, electrovalve_id, electrovalve):
         self.board.initBoard()
@@ -23,15 +25,17 @@ class AutomaticJob:
         self.board.cleanupPin(electrovalve['pin_clk'])
         self.board.cleanupPin(electrovalve['pin_cs'])
 
+        job_id = "{}_automatic".format(electrovalve_id)
+        job_id_soil = "{}_soil".format(electrovalve_id)
+
         try:
-            self.scheduler.remove_job(electrovalve_id)
+            self.scheduler.remove_job(job_id)
         except JobLookupError:
             logger.error("No job with id {} was found".format(electrovalve_id))
             pass
 
-        job_id = "{}_soil".format(electrovalve_id)
         try:
-            self.scheduler.remove_job(job_id)
+            self.scheduler.remove_job(job_id_soil)
         except JobLookupError:
             logger.error("No job with id {} was found".format(electrovalve_id))
             pass

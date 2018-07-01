@@ -7,7 +7,7 @@ class DHTSensorJob:
         self.scheduler = scheduler
 
     def add(self):
-        self.scheduler.add_job(DHTSensorExecutor, 'interval', seconds=30, id='dht_sensor')
+        self.scheduler.add_job(DHTSensorExecutor, 'interval', minutes=1, id='dht_sensor')
 
     def remove(self):
         try:
