@@ -25,15 +25,15 @@ else:
 
 
 class DHTSensor:
-    def __init__(self, dht_sensor_dao, gpio_dao):
+    def __init__(self, dht_sensor_dao, raspberry_dao):
         self.raspberry = raspberry
         self.dht_sensor_dao = dht_sensor_dao
-        self.gpio_dao = gpio_dao
+        self.raspberry_dao = raspberry_dao
 
     def readData(self):
         sensor_data = self.dht_sensor_dao.getSensorData()
         sensor_type = sensor_data['type']
-        pin = self.gpio_dao.getPinByName(sensor_data['pin'])
+        pin = self.raspberry_dao.getPinByName(sensor_data['pin'])
 
         if self.raspberry :
             humidity, temperature = Adafruit_DHT.read(SENSOR_TYPE_LIST[sensor_type], pin)

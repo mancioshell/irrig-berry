@@ -4,9 +4,10 @@ from waterberry.executors.soil_sensor import SoilSensorExecutor
 from waterberry.utils.logger import logger
 
 class AutomaticJob:
-    def __init__(self, scheduler, board):
+    def __init__(self, scheduler, board, raspberry):
         self.scheduler = scheduler
         self.board = board
+        self.raspberry = raspberry
 
     def add(self, electrovalve_id, electrovalve=None):
         job_id = "{}_automatic".format(electrovalve_id)
@@ -19,11 +20,14 @@ class AutomaticJob:
 
     def remove(self, electrovalve_id, electrovalve):
         self.board.initBoard()
-        self.board.cleanupPin(electrovalve['electrovalve_pin'])
-        self.board.cleanupPin(electrovalve['pin_di'])
-        self.board.cleanupPin(electrovalve['pin_do'])
-        self.board.cleanupPin(electrovalve['pin_clk'])
-        self.board.cleanupPin(electrovalve['pin_cs'])
+
+        electrovalve_pin = self.raspberry.getPinByName(electrovalve['electrovalve_pin'])
+        pin_di = self.raspberry.getPinByName(electrovalve['pin_di'])
+        pin_do = self.raspberry.getPinByName(electrovalve['pin_do'])
+        pin_clk = self.raspberry.getPinByName(electrovalve['pin_clk'])
+        pin_cs = self.raspberry.getPinByName(electrovalve['pin_cs'])
+
+        self.board.cleanupPin([electrovalve_pin, pin_di, pin_do, pin_clk, pin_cs])
 
         job_id = "{}_automatic".format(electrovalve_id)
         job_id_soil = "{}_soil".format(electrovalve_id)

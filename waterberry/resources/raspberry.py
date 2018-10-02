@@ -6,11 +6,11 @@ from waterberry.utils.logger import logger
 
 class Raspberry(Resource):
     def __init__(self, **kwargs):
-        self.gpio_dao = kwargs['gpio_dao']
+        self.raspberry_dao = kwargs['raspberry_dao']
 
     def get(self):
         """Get all available raspberry pi models"""
-        raspberry_models = self.gpio_dao.getRaspberryModelList()
+        raspberry_models = self.raspberry_dao.getRaspberryModelList()
         return jsonify(raspberry_models)
 
     def put(self):
@@ -19,5 +19,5 @@ class Raspberry(Resource):
         raspberry, errors = RaspberrySchema().load(json)
         if errors:
             return make_response(jsonify({'message': errors}), 400)
-        self.gpio_dao.setRaspberryPiModel(raspberry['model'])
+        self.raspberry_dao.setRaspberryPiModel(raspberry['model'])
         return make_response(jsonify({}), 201)

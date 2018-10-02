@@ -8,7 +8,7 @@ class Sensor(Resource):
     def __init__(self, **kwargs):
         self.electrovalve_dao = kwargs['electrovalve_dao']
         self.dht_sensor_dao = kwargs['dht_sensor_dao']
-        self.gpio_dao = kwargs['gpio_dao']
+        self.raspberry_dao = kwargs['raspberry_dao']
 
     def get(self):
         sensor = self.dht_sensor_dao.getSensor()
@@ -23,7 +23,7 @@ class Sensor(Resource):
         dht_sensor_pin = self.dht_sensor_dao.getSensor()['pin']
 
         electrovalves = self.electrovalve_dao.getElectrovalveList()
-        available_pins = self.gpio_dao.getAvailablePinList(electrovalves, dht_sensor_pin)
+        available_pins = self.raspberry_dao.getAvailablePinList(electrovalves, dht_sensor_pin)
 
         if dht_sensor['pin'] != dht_sensor_pin and dht_sensor['pin'] not in available_pins:
             logger.error('dht sensor pin already in use ...')

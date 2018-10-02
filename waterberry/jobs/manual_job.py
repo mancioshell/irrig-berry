@@ -3,9 +3,10 @@ from waterberry.executors.manual_electrovalve import ManualElectrovalveExecutor
 from waterberry.utils.logger import logger
 
 class ManualJob:
-    def __init__(self, scheduler, board):
+    def __init__(self, scheduler, board, raspberry):
         self.scheduler = scheduler
         self.board = board
+        self.raspberry = raspberry
 
     def add(self, electrovalve_id, electrovalve=None):
         manual_job_id = "{}_manual".format(electrovalve_id)
@@ -13,7 +14,8 @@ class ManualJob:
 
     def remove(self, electrovalve_id, electrovalve):
         self.board.initBoard()
-        self.board.cleanupPin(electrovalve['electrovalve_pin'])
+        electrovalve_pin = self.raspberry.getPinByName(electrovalve['electrovalve_pin'])
+        self.board.cleanupPin(electrovalve_pin)
         try:
             self.scheduler.remove_job(electrovalve_id)
         except JobLookupError:

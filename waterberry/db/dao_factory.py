@@ -4,7 +4,7 @@ import os
 from flask_pymongo import PyMongo
 from waterberry.utils.logger import logger
 from waterberry.db.electrovalve_dao import ElectrovalveDAO
-from waterberry.db.gpio_dao import GPIODAO
+from waterberry.db.raspberry_dao import RaspberryDAO
 from waterberry.db.dht_sensor_dao import DHTSensorDAO
 from waterberry.utils.definition import ROOT_DIR
 
@@ -29,8 +29,8 @@ class DaoFactory:
     def createElectrovalveDAO(self):
         return ElectrovalveDAO(database)
 
-    def createGPIODAO(self):
-        return GPIODAO(database)
+    def createRaspberryDAO(self):
+        return RaspberryDAO(database)
 
     def createDHTSensorDAO(self):
         return DHTSensorDAO(database)

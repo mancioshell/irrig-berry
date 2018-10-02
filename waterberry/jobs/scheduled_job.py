@@ -6,9 +6,10 @@ from waterberry.executors.next_watering import NextWaterExecutor
 from waterberry.utils.logger import logger
 
 class ScheduledJob:
-    def __init__(self, scheduler, board):
+    def __init__(self, scheduler, board, raspberry):
         self.scheduler = scheduler
         self.board = board
+        self.raspberry = raspberry
 
     def add(self, electrovalve_id, electrovalve):
         timetable = electrovalve['timetable']
@@ -30,7 +31,8 @@ class ScheduledJob:
     def remove(self, electrovalve_id, electrovalve):
         timetable = electrovalve['timetable']
         self.board.initBoard()
-        self.board.cleanupPin(electrovalve['electrovalve_pin'])
+        electrovalve_pin = self.raspberry.getPinByName(electrovalve['electrovalve_pin'])
+        self.board.cleanupPin(electrovalve_pin)
 
         for count, calendar in enumerate(timetable):
             job_id = "scheduled_{}_{}".format(electrovalve_id, count)

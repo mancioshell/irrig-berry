@@ -9,9 +9,9 @@ from flask_socketio import SocketIO, emit
 from waterberry.socket.socket import ElectrovalveSocket
 from waterberry.db.dao_factory import DaoFactory
 from waterberry.jobs.job_factory import JobFactory
-from waterberry.scheduler.scheduler import Scheduler
-from waterberry.gpio.board import Board
-from waterberry.gpio.dht_sensor import DHTSensor
+from jobs.scheduler.scheduler import Scheduler
+from waterberry.ecomponents.board import Board
+from waterberry.ecomponents.dht_sensor import DHTSensor
 from waterberry.resources.electrovalve import Electrovalve
 from waterberry.resources.electrovalve_list import ElectrovalveList
 from waterberry.resources.pin_list import PinList
@@ -41,13 +41,13 @@ dao_factory = DaoFactory()
 
 app = dao_factory.initApp(app)
 electrovalve_dao = dao_factory.createElectrovalveDAO()
-gpio_dao = dao_factory.createGPIODAO()
-gpio_dao.initGPIO()
+raspberry_dao = dao_factory.createRaspberryDAO()
+raspberry_dao.initGPIO()
 dht_sensor_dao = dao_factory.createDHTSensorDAO()
 dht_sensor_dao.initSensor()
 
-dht_sensor = DHTSensor(dht_sensor_dao, gpio_dao)
-board = Board(gpio_dao)
+dht_sensor = DHTSensor(dht_sensor_dao, raspberry_dao)
+board = Board(raspberry_dao)
 
 scheduler = Scheduler(app)
 scheduler = scheduler.getScheduler()
@@ -62,15 +62,15 @@ socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor)
 api = Api(app)
 
 api.add_resource(Electrovalve, '/api/electrovalves/<string:electrovalve_id>',
-    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
+    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'raspberry_dao': raspberry_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
 api.add_resource(ElectrovalveList, '/api/electrovalves',
-    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'gpio_dao': gpio_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
+    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'raspberry_dao': raspberry_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
 
-api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'gpio_dao': gpio_dao, 'electrovalve_dao': electrovalve_dao})
+api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'raspberry_dao': raspberry_dao, 'electrovalve_dao': electrovalve_dao})
 
-api.add_resource(Sensor, '/api/sensors', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'gpio_dao': gpio_dao, 'electrovalve_dao': electrovalve_dao})
+api.add_resource(Sensor, '/api/sensors', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'raspberry_dao': raspberry_dao, 'electrovalve_dao': electrovalve_dao})
 
-api.add_resource(Raspberry, '/api/raspberry', resource_class_kwargs={ 'gpio_dao': gpio_dao})
+api.add_resource(Raspberry, '/api/raspberry', resource_class_kwargs={ 'raspberry_dao': raspberry_dao})
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)

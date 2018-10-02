@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 
-from waterberry.scheduler.scheduler import Scheduler
+from jobs.scheduler.scheduler import Scheduler
 from waterberry.db.dao_factory import database, DaoFactory
 from waterberry.utils.logger import logger
 
