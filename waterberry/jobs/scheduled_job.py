@@ -33,7 +33,7 @@ class ScheduledJob:
         pin = self.raspberry.getPinByName(self.electrovalve.getUsedPins())
         self.board.cleanupPin(pin)
 
-        for count, calendar in enumerate(self.electrovalve.timetable):
+        for count in enumerate(self.electrovalve.timetable):
             job_id = "scheduled_{}_{}".format(self.electrovalve.id, count)
             try:
                 self.scheduler.remove_job(job_id)

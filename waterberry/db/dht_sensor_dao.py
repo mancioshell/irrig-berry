@@ -29,7 +29,7 @@ class DHTSensorDAO:
 
     def getSensor(self):
         data = self.database.db.dht_sensor.find_one({})
-        return DHTSensor(data)
+        return DHTSensor(**data)
 
     def setSensorType(self, sensor):
         self.database.db.dht_sensor.update_one({}, {"$set":  {'type': sensor.type}})
@@ -46,4 +46,4 @@ class DHTSensorDAO:
     def getSensorData(self):
         with self.database.app.app_context():
             data = self.database.db.dht_sensor.find_one({})
-            return DHTSensor(data)
+            return DHTSensor(**data)

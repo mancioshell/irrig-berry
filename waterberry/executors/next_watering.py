@@ -1,7 +1,7 @@
 import time
 from datetime import datetime
 
-from jobs.scheduler.scheduler import Scheduler
+from waterberry.jobs.scheduler import Scheduler
 from waterberry.db.dao_factory import database, DaoFactory
 from waterberry.utils.logger import logger
 
@@ -20,5 +20,5 @@ def NextWaterExecutor(electrovalve_id):
         next_job = reduce(next_run_time_job, selected_jobs)
 
         electrovalve = electrovalve_dao.getElectrovalveById(electrovalve_id)
-        if next_job is not None: electrovalve['next_water'] = next_job.next_run_time
-        electrovalve_dao.updateElectrovalveById(electrovalve, electrovalve_id)
+        if next_job is not None: electrovalve.next_water = next_job.next_run_time
+        electrovalve_dao.updateElectrovalveById(electrovalve)

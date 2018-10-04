@@ -9,11 +9,10 @@ config = configparser.ConfigParser()
 config.read(file)
 raspberry = config.getboolean(os.environ['PLATFORM'], 'RPI_GPIO')
 
-if raspberry:
-    import RPi.GPIO as GPIO
+if raspberry: import RPi.GPIO as GPIO
 
 class Board:
-    def __init__(self, raspberry_dao):
+    def __init__(self):
         self.raspberry = raspberry
 
     def initBoard(self):

@@ -6,7 +6,7 @@ class Raspberry(object):
         self.gpio = kwargs['gpio']
 
     def getPinList(self):
-        return [name for name, pin in self.gpio.iteritems()]
+        return [name for name in self.gpio.iteritems()]
 
     def getPinByName(self, names):
         if type(names) is list:

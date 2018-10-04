@@ -60,7 +60,7 @@ class Electrovalve(ElectrovalveResource):
         """Update electrovalve state"""
         electrovalve = self.electrovalve_dao.getElectrovalveById(electrovalve_id)        
         try:
-            self.isWatering(result)
+            self.isWatering(electrovalve)
         except Forbidden as e:
             response = e.args[0]
             return make_response(response, 403)

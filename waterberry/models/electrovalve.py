@@ -1,13 +1,14 @@
 class ElectrovalveFactory:
     def __init__(self, mode):
         self.mode = mode
+        
     def createElectrovalve(self, **kwargs):
         switcher = {
-            'manual': ManualElectrovalve(kwargs),
-            'automatic': AutomaticElectrovalve(kwargs),
-            'scheduled': ScheduledElectrovalve(kwargs)
+            'manual': ManualElectrovalve(**kwargs),
+            'automatic': AutomaticElectrovalve(**kwargs),
+            'scheduled': ScheduledElectrovalve(**kwargs)
         }
-        return switcher.get(self.mode, ManualElectrovalve(kwargs))
+        return switcher.get(self.mode, ManualElectrovalve(**kwargs))
 
 
 class Electrovalve(object):
@@ -42,5 +43,4 @@ class AutomaticElectrovalve(ManualElectrovalve):
         self.pin_cs = kwargs['pin_cs']
 
     def getUsedPins(self):
-        return super(AutomaticElectrovalve, self).getUsedPins() +
-            [self.pin_di, self.pin_do, self.pin_clk, self.pin_cs]
+        return super(AutomaticElectrovalve, self).getUsedPins() + [self.pin_di, self.pin_do, self.pin_clk, self.pin_cs]

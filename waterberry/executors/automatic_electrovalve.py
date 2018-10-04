@@ -9,28 +9,27 @@ def AutomaticElectrovalveExecutor(electrovalve_id):
     with database.app.app_context():
         electrovalve_dao = DaoFactory().createElectrovalveDAO()
         raspberry_dao = DaoFactory().createRaspberryDAO()
-        raspberry_dao.initGPIO()
-        board = Board(raspberry_dao)
+        raspberry = raspberry_dao.getRasberry()
+
+        board = Board()
 
         electrovalve = electrovalve_dao.getElectrovalveById(electrovalve_id)
 
         logger.info('Soil sensor for electrovalve with id {} has observed humidity {}% \with the humidity threshold {}%'
-            .format(electrovalve_id, electrovalve['current_humidity'], electrovalve['humidity_threshold']))
+            .format(electrovalve_id, electrovalve.current_humidity, electrovalve.humidity_threshold))
 
-        electrovalve_pin = electrovalve['electrovalve_pin']
-
-        if electrovalve['current_humidity'] <= electrovalve['humidity_threshold']:
-            electrovalve['watering'] = True
-            electrovalve_dao.updateElectrovalveById(electrovalve, electrovalve_id)
+        if electrovalve.current_humidity <= electrovalve.humidity_threshold:
+            electrovalve.watering = True
+            electrovalve_dao.updateElectrovalveById(electrovalve)
             board.initBoard()
-            pin = raspberry_dao.getPinByName(electrovalve_pin)
+            pin = raspberry.getPinByName(electrovalve.getUsedPins())           
             board.setupOutputPin(pin)
             board.enablePin(pin)
 
-            logger.info('watering for ... {} seconds'.format(electrovalve['duration']))
-            time.sleep(electrovalve['duration'])
+            logger.info('watering for ... {} seconds'.format(electrovalve.duration))
+            time.sleep(electrovalve.duration)
 
             board.disablePin(pin)
-            electrovalve['watering'] = False
-            electrovalve['last_water'] = datetime.utcnow()
-            electrovalve_dao.updateElectrovalveById(electrovalve, electrovalve_id)
+            electrovalve.watering = False
+            electrovalve.last_water = datetime.utcnow()
+            electrovalve_dao.updateElectrovalveById(electrovalve)

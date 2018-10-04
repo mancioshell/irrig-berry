@@ -1,12 +1,12 @@
 from waterberry.utils.logger import logger
 
 class SoilHumiditySensor:
-    def __init__(self, board, pin_di, pin_do, pin_clk, pin_cs):
+    def __init__(self, board, **kwargs):
         self.board = board
-        self.pin_di = pin_di
-        self.pin_do = pin_do
-        self.pin_clk = pin_clk
-        self.pin_cs = pin_cs
+        self.pin_di = kwargs['pin_di']
+        self.pin_do = kwargs['pin_do']
+        self.pin_clk = kwargs['pin_clk']
+        self.pin_cs = kwargs['pin_cs']
 
     def getADC(self, channel):
         self.board.initBoard()
