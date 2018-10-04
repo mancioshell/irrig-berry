@@ -11,7 +11,13 @@ class PinList(Resource):
 
     def get(self):
         """Get all available pins"""
-        dht_sensor_pin = self.dht_sensor_dao.getSensor()['pin']
-        electrovalves = self.electrovalve_dao.getElectrovalveList()
-        available_pins = self.raspberry_dao.getAvailablePinList(electrovalves, dht_sensor_pin)
+        sensor = self.dht_sensor_dao.getSensor()
+        electrovalves = self.electrovalve_dao.getAllElectrovalves()
+        used_pins = []
+        for electrovalve in electrovalves:
+            used_pins = used_pins + electrovalve.getUsedPins()
+
+        raspberry = self.raspberry_dao.getRasberry()
+        available_pins = list(set(raspberry.getPinList()) - set(used_pins))
+
         return jsonify(available_pins)

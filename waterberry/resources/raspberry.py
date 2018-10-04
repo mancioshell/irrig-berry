@@ -10,7 +10,7 @@ class Raspberry(Resource):
 
     def get(self):
         """Get all available raspberry pi models"""
-        raspberry_models = self.raspberry_dao.getRaspberryModelList()
+        raspberry_models = self.raspberry_dao.getRaspberryList()
         return jsonify(raspberry_models)
 
     def put(self):
@@ -19,5 +19,5 @@ class Raspberry(Resource):
         raspberry, errors = RaspberrySchema().load(json)
         if errors:
             return make_response(jsonify({'message': errors}), 400)
-        self.raspberry_dao.setRaspberryPiModel(raspberry['model'])
+        self.raspberry_dao.setRasberry(raspberry.id)
         return make_response(jsonify({}), 201)

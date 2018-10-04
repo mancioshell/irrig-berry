@@ -21,6 +21,13 @@ class RaspberryDAO:
     #         else:
     #             self.id = str(result['_id'])
 
+    def getRaspberryList(self):
+        data = self.database.db.raspberry.find_one({})
+        raspberry_list = []
+        for raspberry in data['models']:
+            raspberry_list.add(Raspberry(raspberry['id'], raspberry['name'], raspberry['gpio']))
+        return raspberry_list
+
     def addRaspberry(self, raspberry):
         result = self.database.db.raspberry.insert_one(raspberry.__dict__)
         return str(result.inserted_id)
@@ -30,8 +37,8 @@ class RaspberryDAO:
         raspberry = filter(lambda model: model['id'] == data['model'], data['models'])[0]
         return Raspberry(raspberry['id'], raspberry['name'], raspberry['gpio'])
 
-    def setRasberry(self, id, model):
-        return self.database.db.raspberry.update_one({'_id': ObjectId(id)}, {"$set":  {"model": model}})
+    def setRasberry(self, model):
+        return self.database.db.raspberry.update_one({}, {"$set":  {"model": model}})
 
     # def getRaspberryModelList(self):
     #     raspberry = self.database.db.raspberry.find_one({'_id': ObjectId(self.id)})

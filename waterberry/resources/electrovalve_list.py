@@ -12,16 +12,16 @@ class ElectrovalveList(ElectrovalveResource):
 
     def get(self):
         """Get all electrovalves"""
-        electrovalves = self.electrovalve_dao.getElectrovalveList()
-        return jsonify(list(electrovalves))
+        electrovalves = self.electrovalve_dao.getAllElectrovalves()
+        return jsonify(electrovalves)
 
     def delete(self):
         """Delete all electrovalves"""
-        electrovalves = self.electrovalve_dao.getElectrovalveList()
+        electrovalves = self.electrovalve_dao.getAllElectrovalves()
         for electrovalve in electrovalves:
-            self.job_factory.makeJob(electrovalve['mode']).remove(electrovalve['_id'], electrovalve)
+            self.job_factory.makeJob(electrovalve).remove()
 
-        electrovalves = self.electrovalve_dao.deleteElectrovalveList()
+        self.electrovalve_dao.deleteAllElectrovalves()
         return jsonify([])
 
     def post(self):
@@ -36,10 +36,9 @@ class ElectrovalveList(ElectrovalveResource):
             response = e.args[0]
             return make_response(response, 403)
 
-        result = self.electrovalve_dao.createElectrovalve(electrovalve)
-        electrovalve_id = str(result.inserted_id)
+        electrovalve_id = self.electrovalve_dao.createElectrovalve(electrovalve)        
 
-        if electrovalve['mode'] != 'manual':
-            self.job_factory.makeJob(electrovalve['mode']).add(electrovalve_id, electrovalve)
+        if electrovalve.mode != 'manual':
+            self.job_factory.makeJob(electrovalve).add()
 
         return jsonify({'id': electrovalve_id})

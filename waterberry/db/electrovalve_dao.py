@@ -24,17 +24,20 @@ class ElectrovalveDAO:
         item = self.database.db.electrovalve.find_one({'_id': ObjectId(id)})
         return self.electrovalve_factory.createElectrovalve(item)
 
-    def deleteAllElectrovalve(self):
+    def deleteAllElectrovalves(self):
         return self.database.db.electrovalve.remove()
 
     def deleteElectrovalveById(self, id):
-        return self.database.db.electrovalve.find_one_and_delete({'_id': ObjectId(id)})
+        item = self.database.db.electrovalve.find_one_and_delete({'_id': ObjectId(id)})
+        return self.electrovalve_factory.createElectrovalve(item)
 
     def createElectrovalve(self, electrovalve):
-        return self.database.db.electrovalve.insert_one(electrovalve.__dict__)
+        result = self.database.db.electrovalve.insert_one(electrovalve.__dict__)
+        electrovalve.id = str(result.inserted_id)
+        return electrovalve
 
     def updateElectrovalveById(self, electrovalve):
-        return self.database.db.electrovalve.update_one({'_id': ObjectId(id)}, {"$set":  electrovalve.__dict__})
+        return self.database.db.electrovalve.update_one({'_id': ObjectId(electrovalve.id)}, {"$set":  electrovalve.__dict__})
 
     # def updateElectrovalveById(self, electrovalve, id):
     #     if electrovalve['mode'] == 'automatic':

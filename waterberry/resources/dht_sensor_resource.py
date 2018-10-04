@@ -8,7 +8,6 @@ class Sensor(Resource):
     def __init__(self, **kwargs):
         self.electrovalve_dao = kwargs['electrovalve_dao']
         self.dht_sensor_dao = kwargs['dht_sensor_dao']
-        self.raspberry_dao = kwargs['raspberry_dao']
 
     def get(self):
         sensor = self.dht_sensor_dao.getSensor()
@@ -20,17 +19,19 @@ class Sensor(Resource):
         if errors:
            return make_response(jsonify({'message': errors}), 400)
 
-        dht_sensor_pin = self.dht_sensor_dao.getSensor()['pin']
+        current_dht_sensor = self.dht_sensor_dao.getSensor()
 
-        electrovalves = self.electrovalve_dao.getElectrovalveList()
-        available_pins = self.raspberry_dao.getAvailablePinList(electrovalves, dht_sensor_pin)
+        electrovalves = self.electrovalve_dao.getAllElectrovalves()
+        used_pins = []
+        for electrovalve in electrovalves:
+            used_pins = used_pins + electrovalve.getUsedPins()
 
-        if dht_sensor['pin'] != dht_sensor_pin and dht_sensor['pin'] not in available_pins:
+        if dht_sensor.pin != current_dht_sensor.pin and dht_sensor.pin in used_pins:
             logger.error('dht sensor pin already in use ...')
-            message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(dht_sensor['pin'])
+            message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(dht_sensor.pin)
             return make_response(jsonify({'message': message}), 403)
 
-        self.dht_sensor_dao.setSensorType(dht_sensor['type'])
-        self.dht_sensor_dao.setSensorPin(dht_sensor['pin'])
+        self.dht_sensor_dao.setSensorType(dht_sensor.type)
+        self.dht_sensor_dao.setSensorPin(dht_sensor.pin)
 
         return make_response(jsonify({}), 201)

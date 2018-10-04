@@ -1,6 +1,10 @@
 from datetime import datetime
 from marshmallow import fields, Schema, post_load, validates, validates_schema, ValidationError
 
+from waterberry.models.electrovalve import ElectrovalveFactory
+from waterberry.models.raspberry import Raspberry
+from waterberry.models.dht_sensor import DHTSensor
+
 from waterberry.utils.logger import logger
 
 class TimetableSchema(Schema):
@@ -60,9 +64,23 @@ class ElectrovalveSchema(Schema):
         if data['mode'] != 'scheduled' and 'timetable' in data:
             raise ValidationError('timetable field is valid only for scheduled mode')
 
+    @post_load
+    def make_electrovalve(self, data):
+        return ElectrovalveFactory(data['mode']).createElectrovalve(data)
+
 class DHTSensorSchema(Schema):
     type = fields.String(required=True, validate=lambda x: x in ['DHT11', 'DHT22', 'AM2302'])
     pin = fields.String(required=True)
 
+    @post_load
+    def make_sensor(self, data):
+        return DHTSensor(data)
+        
 class RaspberrySchema(Schema):
     model = fields.String(required=True, validate=lambda x: x in ['P1_MOD_B_REV1', 'P1_MOD_B_REV2', 'P1_MOD_B+', 'P2_MOD_B'])
+
+    @post_load
+    def make_raspberry(self, data):
+        return Raspberry(data)
+
+    

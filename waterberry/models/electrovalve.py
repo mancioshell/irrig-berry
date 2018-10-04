@@ -1,6 +1,6 @@
 class ElectrovalveFactory:
     def __init__(self, mode):
-        self.mode = model
+        self.mode = mode
     def createElectrovalve(self, **kwargs):
         switcher = {
             'manual': ManualElectrovalve(kwargs),
@@ -13,6 +13,7 @@ class ElectrovalveFactory:
 class Electrovalve(object):
     def __init__(self, **kwargs):
         self.name = kwargs['name']
+        self.id = kwargs['_id']        
         self.watering = False
         self.next_water = None
         self.last_water = None

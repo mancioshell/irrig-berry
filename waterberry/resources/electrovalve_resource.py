@@ -6,6 +6,25 @@ from waterberry.utils.logger import logger
 
 class Forbidden(Exception):
     pass
+    
+
+def validate_pin(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if not getattr(func, 'validate_pin', True):
+            return func(self, *args, **kwargs)
+
+        dht_sensor_pin = self.dht_sensor_dao.getSensor()['pin']
+        electrovalves = self.electrovalve_dao.getElectrovalveList()
+        available_pins = self.raspberry_dao.getAvailablePinList(electrovalves, dht_sensor_pin)       
+
+        if acct:
+            return func(self, *args, **kwargs)
+
+        
+
+        flask_restful.abort(401)
+    return wrapper
 
 class ElectrovalveResource(Resource):
     def __init__(self, **kwargs):

@@ -1,12 +1,18 @@
 
 class Raspberry(object):
-    def __init__(self, id, name, gpio):
-        self.id = id
-        self.name = name
-        self.gpio = gpio
+    def __init__(self, **kwargs):
+        self.id = kwargs['id']
+        self.name = kwargs['name']
+        self.gpio = kwargs['gpio']
 
     def getPinList(self):
         return [name for name, pin in self.gpio.iteritems()]
 
-    def getPinByName(self, name):
-        return self.gpio[name]
+    def getPinByName(self, names):
+        if type(names) is list:
+            pins = []
+            for name in names:
+                pins.append(self.gpio[name])
+            return pins
+        else:
+            return self.gpio[names]

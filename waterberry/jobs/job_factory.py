@@ -9,11 +9,11 @@ class JobFactory:
         self.board = board
         self.raspberry = raspberry
 
-    def makeJob(self, mode):
+    def makeJob(self, electrovalve):
         switcher = {
-            'manual': ManualJob(self.scheduler, self.board, self.raspberry),
-            'automatic': AutomaticJob(self.scheduler, self.board, self.raspberry),
-            'scheduled': ScheduledJob(self.scheduler, self.board, self.raspberry),
+            'manual': ManualJob(self.scheduler, self.board, self.raspberry, electrovalve),
+            'automatic': AutomaticJob(self.scheduler, self.board, self.raspberry, electrovalve),
+            'scheduled': ScheduledJob(self.scheduler, self.board, self.raspberry, electrovalve),
             'dht_sensor': DHTSensorJob(self.scheduler)
         }
-        return switcher.get(mode, ManualJob(self.scheduler, self.board, self.raspberry))
+        return switcher.get(electrovalve.mode, ManualJob(self.scheduler, self.board, self.raspberry, electrovalve))

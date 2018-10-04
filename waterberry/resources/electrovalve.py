@@ -24,7 +24,7 @@ class Electrovalve(ElectrovalveResource):
         """Delete electrovalve"""
         electrovalve = self.electrovalve_dao.deleteElectrovalveById(electrovalve_id)
         if electrovalve is not None:
-            self.job_factory.makeJob(electrovalve['mode']).remove(electrovalve_id, electrovalve)
+            self.job_factory.makeJob(electrovalve).remove()
             return jsonify({})
         else:
             return make_response(jsonify({'message': ELECTROVALVE_NOT_FOUND.format(electrovalve_id)}), 404)
@@ -36,33 +36,33 @@ class Electrovalve(ElectrovalveResource):
         if errors:
             return make_response(jsonify({'message': errors}), 400)
 
-        result = self.electrovalve_dao.getElectrovalveById(electrovalve_id)
+        electrovalve.id = electrovalve_id
+        current_electrovalve = self.electrovalve_dao.getElectrovalveById(electrovalve_id)
 
-        if result is not None:
+        if current_electrovalve is not None:
             try:
-                self.isWatering(result)
-                self.validatePin(electrovalve, result)
+                self.isWatering(current_electrovalve)
+                self.validatePin(electrovalve, current_electrovalve)
             except Forbidden as e:
                 response = e.args[0]
                 return make_response(response, 403)
-            self.job_factory.makeJob(result['mode']).remove(electrovalve_id, result)
+            self.job_factory.makeJob(current_electrovalve).remove()
         else:
             return make_response(jsonify({'message': ELECTROVALVE_NOT_FOUND.format(electrovalve_id)}), 404)
-
-        self.electrovalve_dao.updateElectrovalveById(electrovalve, electrovalve_id)
-        if electrovalve['mode'] != 'manual':
-            self.job_factory.makeJob(electrovalve['mode']).add(electrovalve_id, electrovalve)
+       
+        self.electrovalve_dao.updateElectrovalveById(electrovalve)
+        if electrovalve.mode != 'manual':
+            self.job_factory.makeJob(electrovalve).add()
 
         return make_response(jsonify({'id': electrovalve_id}), 201)
 
     def patch(self, electrovalve_id):
         """Update electrovalve state"""
-        result = self.electrovalve_dao.getElectrovalveById(electrovalve_id)
-        electrovalve = {'mode': 'manual'}
+        electrovalve = self.electrovalve_dao.getElectrovalveById(electrovalve_id)        
         try:
             self.isWatering(result)
         except Forbidden as e:
             response = e.args[0]
             return make_response(response, 403)
-        self.job_factory.makeJob(electrovalve['mode']).add(electrovalve_id, None)
+        self.job_factory.makeJob(electrovalve).add()
         return make_response(jsonify({'id': electrovalve_id}), 201)
