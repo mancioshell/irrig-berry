@@ -34,24 +34,3 @@ class ElectrovalveDAO:
 
     def updateElectrovalveById(self, electrovalve):
         return self.database.db.electrovalve.update_one({'_id': ObjectId(electrovalve.id)}, {"$set":  electrovalve.__dict__})
-
-    # def updateElectrovalveById(self, electrovalve, id):
-    #     if electrovalve['mode'] == 'automatic':
-    #         electrovalve['timetable'] = None
-    #     elif electrovalve['mode'] == 'scheduled':
-    #         electrovalve['humidity_threshold'] = None
-    #         electrovalve['pin_di'] = None
-    #         electrovalve['pin_do'] = None
-    #         electrovalve['pin_clk'] = None
-    #         electrovalve['pin_cs'] = None
-    #     else:
-    #         electrovalve['timetable'] = None
-    #         electrovalve['humidity_threshold'] = None
-    #         electrovalve['pin_di'] = None
-    #         electrovalve['pin_do'] = None
-    #         electrovalve['pin_clk'] = None
-    #         electrovalve['pin_cs'] = None
-    #
-    #     logger.info(electrovalve)
-    #     electrovalve.pop('_id', None)
-    #     return self.database.db.electrovalve.update_one({'_id': ObjectId(id)}, {"$set":  electrovalve})

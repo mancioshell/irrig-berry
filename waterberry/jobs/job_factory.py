@@ -9,11 +9,12 @@ class JobFactory:
         self.board = board
         self.raspberry = raspberry
 
-    def makeJob(self, electrovalve):
+    def makeJob(self, electrovalve):        
+        mode = electrovalve.mode if type(electrovalve) is object else electrovalve
         switcher = {
             'manual': ManualJob(self.scheduler, self.board, self.raspberry, electrovalve),
             'automatic': AutomaticJob(self.scheduler, self.board, self.raspberry, electrovalve),
             'scheduled': ScheduledJob(self.scheduler, self.board, self.raspberry, electrovalve),
             'dht_sensor': DHTSensorJob(self.scheduler)
         }
-        return switcher.get(electrovalve.mode, ManualJob(self.scheduler, self.board, self.raspberry, electrovalve))
+        return switcher.get(mode, ManualJob(self.scheduler, self.board, self.raspberry, electrovalve))

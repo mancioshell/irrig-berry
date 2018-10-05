@@ -66,7 +66,7 @@ class ElectrovalveSchema(Schema):
 
     @post_load
     def make_electrovalve(self, data):
-        return ElectrovalveFactory(data['mode']).createElectrovalve(data)
+        return ElectrovalveFactory(data['mode']).createElectrovalve(**data)
 
 class DHTSensorSchema(Schema):
     type = fields.String(required=True, validate=lambda x: x in ['DHT11', 'DHT22', 'AM2302'])
@@ -74,13 +74,13 @@ class DHTSensorSchema(Schema):
 
     @post_load
     def make_sensor(self, data):
-        return DHTSensor(data)
+        return DHTSensor(**data)
         
 class RaspberrySchema(Schema):
     model = fields.String(required=True, validate=lambda x: x in ['P1_MOD_B_REV1', 'P1_MOD_B_REV2', 'P1_MOD_B+', 'P2_MOD_B'])
 
     @post_load
     def make_raspberry(self, data):
-        return Raspberry(data)
+        return Raspberry(**data)
 
     

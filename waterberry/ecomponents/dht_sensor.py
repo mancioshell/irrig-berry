@@ -32,7 +32,7 @@ class DHTSensor:
 
     def readData(self):
         sensor_data = self.dht_sensor_dao.getSensorData()
-        sensor_type = sensor_data['type']
+        sensor_type = sensor_data['selected']
         pin = self.raspberry_dao.getPinByName(sensor_data['pin'])
 
         if self.raspberry :

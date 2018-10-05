@@ -31,7 +31,7 @@ class Sensor(Resource):
             message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(dht_sensor.pin)
             return make_response(jsonify({'message': message}), 403)
 
-        self.dht_sensor_dao.setSensorType(dht_sensor.type)
+        self.dht_sensor_dao.setSensorType(dht_sensor.selected)
         self.dht_sensor_dao.setSensorPin(dht_sensor.pin)
 
         return make_response(jsonify({}), 201)

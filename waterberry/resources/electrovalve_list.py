@@ -14,7 +14,7 @@ class ElectrovalveList(ElectrovalveResource):
         """Get all electrovalves"""
         electrovalves = self.electrovalve_dao.getAllElectrovalves()
         return jsonify(electrovalves)
-
+        
     def delete(self):
         """Delete all electrovalves"""
         electrovalves = self.electrovalve_dao.getAllElectrovalves()

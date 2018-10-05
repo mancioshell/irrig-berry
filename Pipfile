@@ -20,5 +20,5 @@ configparser = "==3.5.0"
 #"rpi.gpio" = "==0.6.3"
 gunicorn = "==19.8.1"
 
-[requires]
-python_version = "2.7"
+#[requires]
+#python_version = "2.7"

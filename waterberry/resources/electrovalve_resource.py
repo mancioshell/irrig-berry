@@ -1,30 +1,11 @@
 from flask_restful import Resource
 from flask import jsonify, make_response
 
-from waterberry.utils.messages import *
+from waterberry.utils.messages import DUPLICATE_PINS, ELECTROVALVE_PIN_ALREADY_IN_USE, ELECTROVALVE_IS_WATERING
 from waterberry.utils.logger import logger
 
 class Forbidden(Exception):
     pass
-    
-
-def validate_pin(func):
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        if not getattr(func, 'validate_pin', True):
-            return func(self, *args, **kwargs)
-
-        dht_sensor_pin = self.dht_sensor_dao.getSensor()['pin']
-        electrovalves = self.electrovalve_dao.getElectrovalveList()
-        available_pins = self.raspberry_dao.getAvailablePinList(electrovalves, dht_sensor_pin)       
-
-        if acct:
-            return func(self, *args, **kwargs)
-
-        
-
-        flask_restful.abort(401)
-    return wrapper
 
 class ElectrovalveResource(Resource):
     def __init__(self, **kwargs):
@@ -33,51 +14,30 @@ class ElectrovalveResource(Resource):
         self.job_factory = kwargs['job_factory']
         self.dht_sensor_dao = kwargs['dht_sensor_dao']
 
-    def validatePin(self, electrovalve, data=None):
-        dht_sensor_pin = self.dht_sensor_dao.getSensor()['pin']
+    def validatePin(self, current_electrovalve):
+        sensor = self.dht_sensor_dao.getSensor()
         electrovalves = self.electrovalve_dao.getElectrovalveList()
-        available_pins = self.raspberry_dao.getAvailablePinList(electrovalves, dht_sensor_pin)
+        raspberry = self.raspberry_dao.getRasberry()
 
-        current_electovalve_pin = None
-        current_pin_di = None
-        current_pin_do = None
-        current_pin_clk = None
-        current_pin_cs = None
-        if data is not None:
-            current_pin_di = data['pin_di'] if 'pin_di' in data else None
-            current_pin_do = data['pin_do'] if 'pin_do' in data else None
-            current_pin_clk = data['pin_clk'] if 'pin_clk' in data else None
-            current_pin_cs = data['pin_cs'] if 'pin_cs' in data else None
-            current_electovalve_pin = data['electrovalve_pin'] if 'electrovalve_pin' in data else None
+        used_pins = []
+        for electrovalve in electrovalves:
+            used_pins = used_pins + electrovalve.getUsedPins()
+        used_pins.append(sensor.pin)
 
-        electrovalve_pin = electrovalve['electrovalve_pin']
-        pin_di = electrovalve['pin_di'] if 'pin_di' in electrovalve else None
-        pin_do = electrovalve['pin_do'] if 'pin_do' in electrovalve else None
-        pin_clk = electrovalve['pin_clk'] if 'pin_clk' in electrovalve else None
-        pin_cs = electrovalve['pin_cs'] if 'pin_cs' in electrovalve else None
+        available_pins = list(set(raspberry.getPinList()) - set(used_pins))
+        pins = current_electrovalve.getUsedPins()
 
-        logger.info('electrovalve_pin : {}'.format(electrovalve_pin))
-        logger.info('pin_di : {}'.format(pin_di))
-        logger.info('pin_do : {}'.format(pin_do))
-        logger.info('pin_clk : {}'.format(pin_clk))
-        logger.info('pin_cs : {}'.format(pin_cs))
-
-        logger.info('available_pins : {}'.format(available_pins))
-
-        data_pin_list = set([current_electovalve_pin, current_pin_di, current_pin_do, current_pin_clk, current_pin_cs])
-        electrovalve_pin_list = set([electrovalve_pin, pin_di, pin_do, pin_clk, pin_cs])
-
-        if electrovalve['mode'] == 'automatic' and len(electrovalve_pin_list) < 5:
-            message = DUPLICATE_PINS.format(electrovalve_pin_list)
+        if electrovalve.mode == 'automatic' and len(pins) < 5:
+            message = DUPLICATE_PINS.format(electrovalve.getUsedPins())
             raise Forbidden(jsonify({'message': message}))
 
-        for pin in electrovalve_pin_list:
-            if pin is not None and pin not in available_pins + list(data_pin_list):
+        for pin in pins:
+            if pin not in available_pins:
                 logger.pin('pin already in use ...')
-                message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(electrovalve_pin)
+                message = ELECTROVALVE_PIN_ALREADY_IN_USE.format(pin)
                 raise Forbidden(jsonify({'message': message}))
 
     def isWatering(self, electrovalve):
-        if electrovalve['watering']:
+        if electrovalve.watering:
             message = ELECTROVALVE_IS_WATERING
             raise Forbidden(jsonify({'message': message}))

@@ -16,3 +16,11 @@ class Raspberry(object):
             return pins
         else:
             return self.gpio[names]
+
+
+class Raspberries(object):
+    def __init__(self, **kwargs):
+        if 'id' in kwargs:
+            self.id = kwargs['id']
+        self.models = kwargs['models']
+        self.model = kwargs['model']

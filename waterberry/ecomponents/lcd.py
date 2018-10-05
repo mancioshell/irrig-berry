@@ -29,4 +29,4 @@ class LCD:
             self.lcd.clear()
             self.lcd.message("{}u'\u2103'\n{}%".format(temperature, humidity))
         else:
-            print "Writing {}u'\u2103'\n{}%".format(temperature, humidity)
+            print("Writing {}u'\u2103'\n{}%".format(temperature, humidity))
