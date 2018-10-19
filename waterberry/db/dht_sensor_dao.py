@@ -13,7 +13,7 @@ class DHTSensorDAO:
         return sensor
 
     def getSensor(self):
-        data = self.database.db.dht_sensor.find_one({})
+        data = self.database.db.dht_sensor.find_one({})        
         if data is None: return data
         return DHTSensor(**data)
 
