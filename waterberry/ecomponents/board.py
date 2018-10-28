@@ -14,7 +14,7 @@ if raspberry: import RPi.GPIO as GPIO
 class Board:
     def __init__(self):
         self.raspberry = raspberry
-
+        
     def initBoard(self):
         logger.debug('int bread board ...')
         if self.raspberry : GPIO.setwarnings(False)

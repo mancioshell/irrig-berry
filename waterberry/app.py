@@ -87,5 +87,5 @@ api.add_resource(SensorResource, '/api/sensors', resource_class_kwargs={ 'dht_se
 
 api.add_resource(RaspberryResource, '/api/raspberry', resource_class_kwargs={ 'raspberry_dao': raspberry_dao})
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     socketio.run(app, debug=True)
