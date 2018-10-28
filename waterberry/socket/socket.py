@@ -9,27 +9,26 @@ thread_lock = Lock()
 
 class ElectrovalveSocket(Namespace):
 
-    def __init__(self, socketio, electrovalve_dao, dht_sensor):
+    def __init__(self, socketio, electrovalve_dao, dht_sensor_dao):
         self.socketio = socketio
         self.electrovalve_dao = electrovalve_dao
-        self.dht_sensor = dht_sensor
+        self.dht_sensor_dao = dht_sensor_dao
         super(ElectrovalveSocket, self).__init__()
 
     def __extractData(self, electrovalve):
-        air_humidity, air_temperature = self.dht_sensor.getData()
+        dht_sensor = self.dht_sensor_dao.getSensor()
+        air_humidity = dht_sensor.humidity
+        air_temperature = dht_sensor.temperature
         logger.info("air_humidity {} - air_temperature {}".format(air_humidity, air_temperature))
-        current_humidity = electrovalve['current_humidity'] if 'current_humidity' in electrovalve else None
-        last_water = str(electrovalve['last_water']) if 'last_water' in electrovalve else None
-        next_water = str(electrovalve['next_water']) if 'next_water' in electrovalve else None
 
         return {
-            '_id': str(electrovalve['_id']),
-            'soil_humidity': current_humidity,
+            '_id': str(electrovalve.id),
+            'soil_humidity': electrovalve.current_humidity,
             'air_temperature': air_temperature,
             'air_humidity': air_humidity,
-            'watering': electrovalve['watering'],
-            'last_water': last_water,
-            'next_water': next_water
+            'watering': electrovalve.watering,
+            'last_water': str(electrovalve.last_water),
+            'next_water': str(electrovalve.next_water)
             }
 
     def __backgroundTask(self):

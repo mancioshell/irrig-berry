@@ -15,7 +15,7 @@ class DHTSensorDAO:
     def getSensor(self):
         data = self.database.db.dht_sensor.find_one({})
         if data is None: return data
-        return DHTSensor(**data)
+        return DHTSensor(data['selected'], data['types'], data['pin'], data['humidity'], data['temperature'])
 
     def setSensorType(self, sensor):
         self.database.db.dht_sensor.update_one({}, {"$set":  {'type': sensor.selected}})
@@ -27,9 +27,4 @@ class DHTSensorDAO:
         self.database.db.dht_sensor.update_one({}, {"$set":  {'temperature': sensor.temperature}})
 
     def setHumidity(self, sensor):
-        self.database.db.dht_sensor.update_one({}, {"$set":  {'humidity': sensor.humidity}})    
-
-    def getSensorData(self):
-        with self.database.app.app_context():
-            data = self.database.db.dht_sensor.find_one({})
-            return DHTSensor(**data)
+        self.database.db.dht_sensor.update_one({}, {"$set":  {'humidity': sensor.humidity}})

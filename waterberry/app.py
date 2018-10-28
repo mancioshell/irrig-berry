@@ -11,12 +11,11 @@ from waterberry.db.dao_factory import DaoFactory
 from waterberry.jobs.job_factory import JobFactory
 from waterberry.jobs.scheduler import Scheduler
 from waterberry.ecomponents.board import Board
-from waterberry.ecomponents.dht_sensor import DHTSensor
 from waterberry.models.dht_sensor import DHTSensor as DHTSensorModel
 from waterberry.resources.electrovalve import Electrovalve
 from waterberry.resources.electrovalve_list import ElectrovalveList
 from waterberry.resources.pin_list import PinList
-from waterberry.resources.dht_sensor_resource import Sensor
+from waterberry.resources.dht_sensor_resource import Sensor as SensorResource
 from waterberry.resources.raspberry import Raspberry as RaspberryResource
 from waterberry.models.raspberry import Raspberries
 from waterberry.utils.json_encoder import CustomJSONEncoder
@@ -58,9 +57,8 @@ with database.app.app_context():
     reader = FileReader('data/sensor.json')
     data = reader.readFile()
     result = dht_sensor_dao.getSensor()
-    if result is None : dht_sensor_dao.addSensor(DHTSensorModel(**data))
+    if result is None : dht_sensor_dao.addSensor(DHTSensorModel(data['selected'], data['types'], data['pin']))
 
-dht_sensor = DHTSensor(dht_sensor_dao, raspberry_dao)
 board = Board()
 
 scheduler = Scheduler(app)
@@ -74,7 +72,7 @@ job_factory.makeJob('dht_sensor').remove()
 job_factory.makeJob('dht_sensor').add()
 
 socketio = SocketIO(app, logger=True,  engineio_logger=True)
-socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor))
+socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor_dao))
 
 api = Api(app)
 
@@ -85,7 +83,7 @@ api.add_resource(ElectrovalveList, '/api/electrovalves',
 
 api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'raspberry_dao': raspberry_dao, 'electrovalve_dao': electrovalve_dao})
 
-api.add_resource(Sensor, '/api/sensors', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'raspberry_dao': raspberry_dao, 'electrovalve_dao': electrovalve_dao})
+api.add_resource(SensorResource, '/api/sensors', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'raspberry_dao': raspberry_dao, 'electrovalve_dao': electrovalve_dao})
 
 api.add_resource(RaspberryResource, '/api/raspberry', resource_class_kwargs={ 'raspberry_dao': raspberry_dao})
 
