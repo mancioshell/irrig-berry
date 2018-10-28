@@ -1,17 +1,12 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [dev-packages]
-
 pylint = "<2.0.0"
 
-
 [packages]
-
 #"rpi.gpio" = "==0.6.3"
 gunicorn = "==19.8.1"
 flask = "==1.0.2"

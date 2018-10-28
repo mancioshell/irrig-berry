@@ -44,3 +44,4 @@ class AutomaticJob:
         self.scheduler.reschedule_job(self.electrovalve.id, trigger='interval', minutes=5)
         job_id = "{}_soil".format(self.electrovalve.id)
         self.scheduler.reschedule_job(job_id, trigger='interval', minutes=1)
+pp
