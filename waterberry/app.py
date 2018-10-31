@@ -60,13 +60,14 @@ with database.app.app_context():
     if result is None : dht_sensor_dao.addSensor(DHTSensorModel(data['selected'], data['types'], data['pin']))
 
 board = Board()
+board.initBoard()
 
 scheduler = Scheduler(app)
 scheduler = scheduler.getScheduler()
 
 with database.app.app_context():
     raspberry = raspberry_dao.getRasberry()
-job_factory = JobFactory(scheduler, board, raspberry)
+job_factory = JobFactory(scheduler)
 
 job_factory.makeJob('dht_sensor').remove()
 job_factory.makeJob('dht_sensor').add()
@@ -77,9 +78,9 @@ socketio.on_namespace(ElectrovalveSocket(socketio, electrovalve_dao, dht_sensor_
 api = Api(app)
 
 api.add_resource(Electrovalve, '/api/electrovalves/<string:electrovalve_id>',
-    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'raspberry_dao': raspberry_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
+    resource_class_kwargs={'board': board, 'raspberry': raspberry, 'electrovalve_dao': electrovalve_dao, 'raspberry_dao': raspberry_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
 api.add_resource(ElectrovalveList, '/api/electrovalves',
-    resource_class_kwargs={ 'electrovalve_dao': electrovalve_dao, 'raspberry_dao': raspberry_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
+    resource_class_kwargs={ 'board': board, 'raspberry': raspberry, 'electrovalve_dao': electrovalve_dao, 'raspberry_dao': raspberry_dao, 'job_factory': job_factory, 'dht_sensor_dao': dht_sensor_dao})
 
 api.add_resource(PinList, '/api/pins', resource_class_kwargs={ 'dht_sensor_dao': dht_sensor_dao, 'raspberry_dao': raspberry_dao, 'electrovalve_dao': electrovalve_dao})
 

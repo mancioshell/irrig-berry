@@ -4,3 +4,4 @@ deploy.sh
 logs/
 *.pyc
 .vscode/
+waterberry.egg-info/

@@ -10,9 +10,11 @@ class Forbidden(Exception):
 class ElectrovalveResource(Resource):
     def __init__(self, **kwargs):
         self.electrovalve_dao = kwargs['electrovalve_dao']
-        self.raspberry_dao = kwargs['raspberry_dao']
-        self.job_factory = kwargs['job_factory']
+        self.raspberry_dao = kwargs['raspberry_dao']        
         self.dht_sensor_dao = kwargs['dht_sensor_dao']
+        self.job_factory = kwargs['job_factory']
+        self.board = kwargs['board']
+        self.raspberry = kwargs['raspberry']
 
     def validatePin(self, current_electrovalve):
         sensor = self.dht_sensor_dao.getSensor()
@@ -41,3 +43,7 @@ class ElectrovalveResource(Resource):
         if electrovalve.watering:
             message = ELECTROVALVE_IS_WATERING
             raise Forbidden(jsonify({'message': message}))
+
+    def cleanBoard(self, electrovalve):
+        pin = self.raspberry.getPinByName(electrovalve.getUsedPins())
+        self.board.cleanupPin(pin)

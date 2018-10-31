@@ -20,6 +20,7 @@ class ElectrovalveList(ElectrovalveResource):
         electrovalves = self.electrovalve_dao.getAllElectrovalves()
         for electrovalve in electrovalves:
             self.job_factory.makeJob(electrovalve).remove()
+            self.cleanBoard(electrovalve)
 
         self.electrovalve_dao.deleteAllElectrovalves()
         return jsonify([])

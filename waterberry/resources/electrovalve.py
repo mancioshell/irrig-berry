@@ -25,6 +25,7 @@ class Electrovalve(ElectrovalveResource):
         electrovalve = self.electrovalve_dao.deleteElectrovalveById(electrovalve_id)
         if electrovalve is not None:
             self.job_factory.makeJob(electrovalve).remove()
+            self.cleanBoard(electrovalve)
             return jsonify({})
         else:
             return make_response(jsonify({'message': ELECTROVALVE_NOT_FOUND.format(electrovalve_id)}), 404)
@@ -47,6 +48,7 @@ class Electrovalve(ElectrovalveResource):
                 response = e.args[0]
                 return make_response(response, 403)
             self.job_factory.makeJob(current_electrovalve).remove()
+            self.cleanBoard(electrovalve)
         else:
             return make_response(jsonify({'message': ELECTROVALVE_NOT_FOUND.format(electrovalve_id)}), 404)
        

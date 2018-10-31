@@ -1,30 +1,37 @@
-from apscheduler.jobstores.base import JobLookupError
+from apscheduler.jobstores.base import JobLookupError, ConflictingIdError
 from waterberry.executors.automatic_electrovalve import AutomaticElectrovalveExecutor
 from waterberry.executors.soil_sensor import SoilSensorExecutor
 from waterberry.utils.logger import logger
 
 class AutomaticJob:
-    def __init__(self, scheduler, board, raspberry, electrovalve):
+    JOB_INTERVAL = 15
+    JOB_SOIL_INTERVAL = 5
+
+    def __init__(self, scheduler, electrovalve):        
         self.scheduler = scheduler
-        self.board = board
-        self.raspberry = raspberry
         self.electrovalve = electrovalve
 
     def add(self):
         job_id = "{}_automatic".format(self.electrovalve.id)
         job_id_soil = "{}_soil".format(self.electrovalve.id)
 
-        self.scheduler.add_job(AutomaticElectrovalveExecutor, 'interval', minutes=15,
-            args=[self.electrovalve.id], id=job_id)
-        self.scheduler.add_job(SoilSensorExecutor, 'interval', minutes=5,
-            args=[self.electrovalve.id], id=job_id_soil)
+        try:
+            self.scheduler.add_job(AutomaticElectrovalveExecutor, 'interval', minutes=self.JOB_INTERVAL,
+                args=[self.electrovalve.id], id=job_id)
+        except ConflictingIdError:
+            logger.error("Job with id {} was already found".format(job_id))
+            self.scheduler.reschedule_job(job_id, trigger='interval', minutes=self.JOB_INTERVAL)
+            pass
+
+        try:
+            self.scheduler.add_job(SoilSensorExecutor, 'interval', minutes=self.JOB_SOIL_INTERVAL, 
+                args=[self.electrovalve.id], id=job_id_soil)
+        except ConflictingIdError:
+            logger.error("Job with id {} was already found".format(job_id_soil))
+            self.scheduler.reschedule_job(job_id_soil, trigger='interval', minutes=self.JOB_SOIL_INTERVAL)
+            pass        
 
     def remove(self):
-        self.board.initBoard()
-
-        pins = self.raspberry.getPinByName(self.electrovalve.getUsedPins())
-        self.board.cleanupPin(pins)
-
         job_id = "{}_automatic".format(self.electrovalve.id)
         job_id_soil = "{}_soil".format(self.electrovalve.id)
 
@@ -41,7 +48,7 @@ class AutomaticJob:
             pass
 
     def reschedule(self):
-        self.scheduler.reschedule_job(self.electrovalve.id, trigger='interval', minutes=5)
-        job_id = "{}_soil".format(self.electrovalve.id)
-        self.scheduler.reschedule_job(job_id, trigger='interval', minutes=1)
-pp
+        job_id = "{}_automatic".format(self.electrovalve.id)
+        self.scheduler.reschedule_job(job_id, trigger='interval', minutes=self.JOB_INTERVAL)
+        job_id_soil = "{}_soil".format(self.electrovalve.id)
+        self.scheduler.reschedule_job(job_id_soil, trigger='interval', minutes=self.JOB_SOIL_INTERVAL)

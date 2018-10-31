@@ -10,7 +10,7 @@ from waterberry.utils.definition import ROOT_DIR
 
 file = os.path.join(ROOT_DIR, 'config/waterberry.config')
 config = configparser.ConfigParser()
-config.read(file)
+config.read_file(open(file))
 
 database = PyMongo()
 
