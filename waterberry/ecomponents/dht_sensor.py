@@ -8,7 +8,7 @@ from waterberry.db.dht_sensor_dao import DHTSensorDAO
 
 file = os.path.join(ROOT_DIR, 'config/waterberry.config')
 config = configparser.ConfigParser()
-config.read(file)
+config.read_file(open(file))
 raspberry = config.getboolean(os.environ['PLATFORM'], 'RPI_GPIO')
 
 if raspberry:

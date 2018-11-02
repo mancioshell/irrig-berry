@@ -1,4 +1,4 @@
-from apscheduler.jobstores.base import JobLookupError
+from apscheduler.jobstores.base import JobLookupError, ConflictingIdError
 from waterberry.executors.manual_electrovalve import ManualElectrovalveExecutor
 from waterberry.utils.logger import logger
 
@@ -9,7 +9,11 @@ class ManualJob:
 
     def add(self):
         manual_job_id = "{}_manual".format(self.electrovalve.id)
-        self.scheduler.add_job(ManualElectrovalveExecutor, 'date', args=[self.electrovalve.id], id=manual_job_id)
+        try:
+            self.scheduler.add_job(ManualElectrovalveExecutor, 'date', args=[self.electrovalve.id], id=manual_job_id)
+        except ConflictingIdError:
+            logger.error("Job with id {} was already found".format(manual_job_id))
+            self.scheduler.reschedule_job(manual_job_id, trigger='date')       
 
     def remove(self):        
         try:

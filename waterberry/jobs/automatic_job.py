@@ -21,15 +21,13 @@ class AutomaticJob:
         except ConflictingIdError:
             logger.error("Job with id {} was already found".format(job_id))
             self.scheduler.reschedule_job(job_id, trigger='interval', minutes=self.JOB_INTERVAL)
-            pass
 
         try:
             self.scheduler.add_job(SoilSensorExecutor, 'interval', minutes=self.JOB_SOIL_INTERVAL, 
                 args=[self.electrovalve.id], id=job_id_soil)
         except ConflictingIdError:
             logger.error("Job with id {} was already found".format(job_id_soil))
-            self.scheduler.reschedule_job(job_id_soil, trigger='interval', minutes=self.JOB_SOIL_INTERVAL)
-            pass        
+            self.scheduler.reschedule_job(job_id_soil, trigger='interval', minutes=self.JOB_SOIL_INTERVAL)     
 
     def remove(self):
         job_id = "{}_automatic".format(self.electrovalve.id)

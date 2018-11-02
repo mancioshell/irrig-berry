@@ -9,8 +9,8 @@ from waterberry.utils.logger import logger
 
 def DHTSensorExecutor():
     with database.app.app_context():
-        dht_sensor_dao = DaoFactory().createDHTSensorDAO()        
-        raspberry_dao = DaoFactory().createRaspberryDAO()       
+        dht_sensor_dao = DaoFactory().createDHTSensorDAO()
+        raspberry_dao = DaoFactory().createRaspberryDAO()
         lcd = LCD()
 
         dht_sensor = DHTSensor(dht_sensor_dao, raspberry_dao)
